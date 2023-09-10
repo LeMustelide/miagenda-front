@@ -1,0 +1,25 @@
+<div class="timetable">
+    <div class="week-names">
+      <div *ngFor="let day of days">{{ day }}</div>
+    </div>
+    <div class="time-interval">
+      <div *ngFor="let time of timeIntervals">{{ time }}</div>
+    </div>
+    <div class="content">
+      <ng-container *ngFor="let time of timeIntervals">
+        <ng-container *ngFor="let day of days">
+          <div *ngIf="getEvent(day, time); let event">
+            <div class="event accent-orange-gradient">
+              <p class="title">{{ event.title }}</p>
+              <p class="groups">{{ event.groups }}</p>
+              <p class="location">{{ event.location }}</p>
+              <p class="professor">{{ event.professor }}</p>
+              <p class="time">{{ event.start_time }} - {{ event.end_time }}</p>
+            </div>
+          </div>
+          <div *ngIf="!getEvent(day, time)"></div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+  
