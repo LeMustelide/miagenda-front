@@ -1,34 +1,6 @@
 $accent-base: #8eeec0;
 $cutty-sark: #546e7a;
 $porcelain: #eceff1;
-$accents: (
-  pink: adjust-hue($accent-base, -180%),
-  orange: adjust-hue($accent-base, -120%),
-  green: adjust-hue($accent-base, -60%),
-  cyan: $accent-base,
-  blue: adjust-hue($accent-base, 60%),
-  purple: adjust-hue($accent-base, 120%),
-);
-
-@function make-gradient($color) {
-  @return linear-gradient(135deg, $color, adjust-hue($color, 40%));
-}
-
-@mixin make-tiles {
-  @each $name, $value in $accents {
-    .accent-#{$name}-gradient {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      background: make-gradient($value);
-      transition: 0.2s ease box-shadow, 0.2s ease transform;
-      &:hover {
-        box-shadow: 0 20px 30px 0 transparentize($value, 0.7);
-        transform: scale(1.05);
-      }
-    }
-  }
-}
 
 html,
 body {
@@ -42,14 +14,14 @@ body {
 }
 
 .timetable {
-  @include make-tiles;
   display: grid;
   grid-template-areas:
     ". week"
     "time content";
   grid-template-columns: 120px;
   grid-template-rows: 60px;
-  width: 100%;
+  overflow: auto;
+
   height: 90vh;
   .weekend {
     background: lighten($porcelain, 5%);
@@ -96,17 +68,23 @@ body {
     }
 
     .event {
-        padding: 6px 12px;
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        font-size: 0.8rem;
-        .title {
-            font-weight: bold;
-        }
-        p {
-            margin: 0;
-        }
+      padding: 6px 12px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      height: calc(var(--size) * 100 / 60 * 1%);
+      z-index: 2;
+      position: relative;
+      transform: translateY(calc(var(--start) * 1%));
+      background-color: darkseagreen;
+      .title {
+        font-weight: bold;
+      }
+      p {
+        margin: 0;
+      }
     }
   }
 }

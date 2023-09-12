@@ -1,3 +1,5 @@
+<app-group-selector (groupTDChanged)="handleGroupTDChange($event)" (groupTPChanged)="handleGroupTPChange($event)"></app-group-selector>
+<p>Votre groupe sélectionné est: {{ selectedGroupTD }}</p>
 <div class="timetable">
     <div class="week-names">
       <div *ngFor="let day of days">{{ day }}</div>
@@ -9,7 +11,7 @@
       <ng-container *ngFor="let time of timeIntervals">
         <ng-container *ngFor="let day of days">
           <div *ngIf="getEvent(day, time); let event">
-            <div class="event accent-orange-gradient">
+            <div class="event accent-orange-gradient" style="--size:{{ getEventDuration(event) }}; --start:{{ getEventStart(event) }}">
               <p class="title">{{ event.title }}</p>
               <p class="groups">{{ event.groups }}</p>
               <p class="location">{{ event.location }}</p>
