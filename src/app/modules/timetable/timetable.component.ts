@@ -12,15 +12,6 @@ export class TimetableComponent implements OnInit {
   selectedGroupTP: string = '';
   public scheduleData: ScheduleData | null = null;
 
-  // Liste des jours et des intervalles de temps
-  public days: string[] = [
-    'Lundi',
-    'Mardi',
-    'Mercredi',
-    'Jeudi',
-    'Vendredi',
-    'Samedi',
-  ];
   public timeIntervals: string[] = [
     '08h00 - 09h00',
     '09h00 - 10h00',
@@ -36,42 +27,74 @@ export class TimetableComponent implements OnInit {
     '19h00 - 20h00',
   ];
 
+  weekDays: Date[] = [];
+  date: Date = new Date();
+
   constructor(private timetableService: TimetableService) {}
 
   ngOnInit(): void {
     this.loadSchedule();
+    this.generateWeek();
   }
-  
+
+  generateWeek(): void {
+    const now = new Date();
+    const currentDayOfWeek = now.getDay();
+    const daysToMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1; // considérant que Sunday est 0 et Monday est 1
+
+    for (let i = 0; i < 6; i++) {
+      const newDate = new Date(now);
+      newDate.setDate(now.getDate() - daysToMonday + i);
+      this.weekDays.push(newDate);
+    }
+  }
+
   loadSchedule(): void {
     this.timetableService.getSchedule().subscribe((data: ScheduleData) => {
       this.scheduleData = {
         ...data,
-        data: data.data.filter(item => 
-          !item.groups || item.groups.includes('Gr  ALT') 
-          || (this.selectedGroupTD == 'TD1' && (item.groups.includes('Gr TD1ALT') || item.groups.includes('Gr TD1FI')))
-          || (this.selectedGroupTP == 'TD2' && (item.groups.includes('Gr TD2ALT') || item.groups.includes('Gr TD2FI')))
-          || (this.selectedGroupTP == 'TP1' && (item.groups.includes('Gr TP 1ALT') || item.groups.includes('Gr TP1 FI') || item.groups.includes('ANG1ALT') || item.groups.includes('ANG1FI')))
-          || (this.selectedGroupTP == 'TP2' && (item.groups.includes('Gr TP 2ALT') || item.groups.includes('Gr TP2FI') || item.groups.includes('ANG2ALT') || item.groups.includes('ANG2FI')))
-          || (this.selectedGroupTP == 'TP3' && (item.groups.includes('Gr TP 3ALT') || item.groups.includes('Gr TP3FI') || item.groups.includes('ANG3ALT') || item.groups.includes('ANG3FI')))
-
-        )
+        data: data.data.filter(
+          (item) =>
+            !item.groups ||
+            item.groups.includes('Gr  ALT') ||
+            (this.selectedGroupTD == 'TD1' &&
+              (item.groups.includes('Gr TD1ALT') ||
+                item.groups.includes('Gr TD1FI'))) ||
+            (this.selectedGroupTP == 'TD2' &&
+              (item.groups.includes('Gr TD2ALT') ||
+                item.groups.includes('Gr TD2FI'))) ||
+            (this.selectedGroupTP == 'TP1' &&
+              (item.groups.includes('Gr TP 1ALT') ||
+                item.groups.includes('Gr TP1 FI') ||
+                item.groups.includes('ANG1ALT') ||
+                item.groups.includes('ANG1FI'))) ||
+            (this.selectedGroupTP == 'TP2' &&
+              (item.groups.includes('Gr TP 2ALT') ||
+                item.groups.includes('Gr TP2FI') ||
+                item.groups.includes('ANG2ALT') ||
+                item.groups.includes('ANG2FI'))) ||
+            (this.selectedGroupTP == 'TP3' &&
+              (item.groups.includes('Gr TP 3ALT') ||
+                item.groups.includes('Gr TP3FI') ||
+                item.groups.includes('ANG3ALT') ||
+                item.groups.includes('ANG3FI')))
+        ),
       };
     });
   }
-  
+
   handleGroupTDChange(groupTD: string) {
     this.selectedGroupTD = groupTD;
-    this.loadSchedule();  // Rechargez l'emploi du temps lorsque le groupe change
+    this.loadSchedule(); // Rechargez l'emploi du temps lorsque le groupe change
   }
-  
+
   handleGroupTPChange(groupTP: string) {
     this.selectedGroupTP = groupTP;
-    this.loadSchedule();  // Rechargez l'emploi du temps lorsque le groupe change
+    this.loadSchedule(); // Rechargez l'emploi du temps lorsque le groupe change
   }
-  
 
   // Cette fonction retourne l'événement pour un jour et un intervalle de temps donné, si disponible
-  getEvent(day: string, time: string): ScheduleItem | null {
+  getEvent(day: Date, time: string): ScheduleItem | null {
     if (!this.scheduleData) {
       return null;
     }
@@ -79,47 +102,23 @@ export class TimetableComponent implements OnInit {
     const startTime = time.split(' - ')[0];
     const endTime = time.split(' - ')[1];
     return (
-      this.scheduleData.data.find(
-        (item) =>
-          this.getDayName(item.date) === day &&
+      this.scheduleData.data.find((item) => {
+        const itemDate = this.stringToDate(item.date);
+
+        return (
+          itemDate.getDate() === day.getDate() &&
+          itemDate.getMonth() === day.getMonth() &&
+          itemDate.getFullYear() === day.getFullYear() &&
           item.start_time >= startTime &&
           item.start_time < endTime
-      ) ?? null
+        );
+      }) ?? null
     );
   }
 
-  // Cette fonction retourne tous les événements pour un jour et un intervalle de temps donné
-  getEvents(day: string, time: string): ScheduleItem[] {
-    if (!this.scheduleData) {
-      return [];
-    }
-
-    const startTime = time.split(' - ')[0];
-    const endTime = time.split(' - ')[1];
-
-    return this.scheduleData.data.filter(
-      (item) =>
-        this.getDayName(item.date) === day &&
-        item.start_time >= startTime &&
-        item.start_time < endTime
-    );
-  }
-
-  // Cette fonction convertit une date au format 'yyyy-MM-dd' en nom de jour
-  getDayName(date: string): string {
-    const dayNames: string[] = [
-      'Dimanche',
-      'Lundi',
-      'Mardi',
-      'Mercredi',
-      'Jeudi',
-      'Vendredi',
-      'Samedi',
-    ];
-    //change date format to 'yyyy-MM-dd'
-    date = date.split('/').reverse().join('-');
-    const dayIndex: number = new Date(date).getDay();
-    return dayNames[dayIndex];
+  stringToDate(dateString: string): Date {
+    const [day, month, year] = dateString.split('/').map(Number);
+    return new Date(year, month - 1, day); // les mois sont indexés à partir de 0 en JS
   }
 
   // Cette fonction retourne la durée d'un événement en minutes
@@ -142,5 +141,20 @@ export class TimetableComponent implements OnInit {
     const startMinutes: number = startParts[1] ? parseInt(startParts[1]) : 0;
 
     return (startMinutes * 100) / this.getEventDuration(event);
+  }
+
+  getCurrentLinePosition(): string {
+    // Décalage dû au demi-intervalle
+    const initialOffset = 1;
+    const hourPosition = initialOffset + (this.date.getHours() * 1) / 2; // 1/2fr pour chaque heure
+    const minutePosition = this.date.getMinutes() * (1 / 120); // fraction de 1/2fr pour chaque minute
+
+    const totalPosition = hourPosition + minutePosition;
+
+    // Convertissons le total en pourcentage par rapport à la grille entière.
+    const percentagePerFr = 100 / 13;
+    const positionPercentage = totalPosition * percentagePerFr;
+
+    return positionPercentage + '%';
   }
 }
