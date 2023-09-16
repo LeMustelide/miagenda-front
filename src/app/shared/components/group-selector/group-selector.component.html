@@ -4,8 +4,12 @@
 </select>
 
 <select [(ngModel)]="groupTP" (change)="onGroupTPSelect()">
-    <option value="TP1">TP1</option>
-    <option value="TP2">TP2</option>
-    <option value="TP2">TP3</option>
-  </select>
-  
+  <option value="TP1">TP1</option>
+  <option value="TP2">TP2</option>
+  <option value="TP2">TP3</option>
+</select>
+
+<select [(ngModel)]="alternant" (change)="onAlternantSelect()">
+  <option value="False">Initiale</option>
+  <option value="True">Alternant</option>
+</select>

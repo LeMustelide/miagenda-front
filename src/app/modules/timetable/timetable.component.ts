@@ -10,6 +10,7 @@ import { ScheduleData, ScheduleItem } from '../../schedule.model';
 export class TimetableComponent implements OnInit {
   selectedGroupTD: string = '';
   selectedGroupTP: string = '';
+  alternant: boolean = true;
   public scheduleData: ScheduleData | null = null;
 
   public timeIntervals: string[] = [
@@ -54,33 +55,70 @@ export class TimetableComponent implements OnInit {
       this.scheduleData = {
         ...data,
         data: data.data.filter(
-          (item) =>
-            !item.groups ||
-            item.groups.includes('Gr  ALT') ||
+          (item) => {
+            if(this.selectedGroupTD == 'TD2'){
+              if(item.groups.includes('Gr  TD2FI')){
+                console.log(item);
+              }
+            }
+            return !item.groups ||
+            ( this.alternant && item.groups.includes('Gr  ALT') ) ||
+            ( !this.alternant && item.groups.includes('Gr  FI') ) ||
             (this.selectedGroupTD == 'TD1' &&
-              (item.groups.includes('Gr TD1ALT') ||
-                item.groups.includes('Gr TD1FI'))) ||
-            (this.selectedGroupTP == 'TD2' &&
-              (item.groups.includes('Gr TD2ALT') ||
-                item.groups.includes('Gr TD2FI'))) ||
+              (
+                ( this.alternant && item.groups.includes('Gr TD1ALT') )
+                ||
+                ( !this.alternant && item.groups.includes('Gr TD1FI'))
+              )
+            )
+            ||
+            (this.selectedGroupTD == 'TD2' &&
+              ( 
+                ( this.alternant && item.groups.includes('Gr TD2ALT') )
+                ||
+                ( !this.alternant && item.groups.includes('Gr  TD2FI') )
+              )
+            ) ||
             (this.selectedGroupTP == 'TP1' &&
-              (item.groups.includes('Gr TP 1ALT') ||
-                item.groups.includes('Gr TP1 FI') ||
-                item.groups.includes('ANG1ALT') ||
-                item.groups.includes('ANG1FI'))) ||
+              (
+                ( this.alternant && item.groups.includes('Gr TP 1ALT'))
+                ||
+                ( !this.alternant && item.groups.includes('Gr TP1 FI'))
+                ||
+                ( this.alternant && item.groups.includes('ANG1ALT'))
+                ||
+                ( this.alternant && item.groups.includes('ANG1FI'))
+              )
+            )
+            ||
             (this.selectedGroupTP == 'TP2' &&
-              (item.groups.includes('Gr TP 2ALT') ||
-                item.groups.includes('Gr TP2FI') ||
-                item.groups.includes('ANG2ALT') ||
-                item.groups.includes('ANG2FI'))) ||
+              (
+                (this.alternant && item.groups.includes('Gr TP 2ALT'))
+                ||
+                ( !this.alternant && item.groups.includes('Gr TP2FI'))
+                ||
+                ( this.alternant && item.groups.includes('ANG2ALT') )
+                ||
+                ( !this.alternant && item.groups.includes('ANG2FI'))
+              )
+            )
+            ||
             (this.selectedGroupTP == 'TP3' &&
-              (item.groups.includes('Gr TP 3ALT') ||
-                item.groups.includes('Gr TP3FI') ||
-                item.groups.includes('ANG3ALT') ||
-                item.groups.includes('ANG3FI')))
+              (
+                ( this.alternant && item.groups.includes('Gr TP 3ALT') )
+                ||
+                ( !this.alternant && item.groups.includes('Gr TP3FI') )
+                ||
+                ( this.alternant && item.groups.includes('ANG3ALT') )
+                ||
+                ( !this.alternant && item.groups.includes('ANG3FI') )
+              )
+            )
+          }
         ),
       };
     });
+    console.log(this.scheduleData);
   }
 
   handleGroupTDChange(groupTD: string) {
@@ -90,6 +128,12 @@ export class TimetableComponent implements OnInit {
 
   handleGroupTPChange(groupTP: string) {
     this.selectedGroupTP = groupTP;
+    this.loadSchedule(); // Rechargez l'emploi du temps lorsque le groupe change
+  }
+
+  handleAlternantChange(alternant: boolean) {
+    this.alternant = alternant;
+    console.log(this.alternant);
     this.loadSchedule(); // Rechargez l'emploi du temps lorsque le groupe change
   }
 

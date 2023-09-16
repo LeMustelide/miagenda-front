@@ -8,8 +8,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
 export class GroupSelectComponent {
   groupTD: string = '';
   groupTP: string = '';
+  alternant: boolean = true;
   @Output() groupTDChanged = new EventEmitter<string>();
   @Output() groupTPChanged = new EventEmitter<string>();
+  @Output() alternantChanged = new EventEmitter<boolean>();
 
   onGroupTDSelect() {
     this.groupTDChanged.emit(this.groupTD);
@@ -17,5 +19,9 @@ export class GroupSelectComponent {
 
   onGroupTPSelect() {
     this.groupTPChanged.emit(this.groupTP);
+  }
+
+  onAlternantSelect() {
+    this.alternantChanged.emit(this.alternant);
   }
 }
