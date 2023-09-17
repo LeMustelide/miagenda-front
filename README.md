@@ -1,27 +1,12 @@
-# Miagenda
+![MIAGENDA](https://miagenda.fr/assets/img/miagendashort.png)
+Miagenda est une solution web permettant de récupérer et d'afficher correctement et proprement votre enmploi du temps sans avoir à passer par 
+celui de l'Université d'Orléans.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.1.
+## J'ai des idées !
+Vous avez des idées ou des requêtes ?
+Vous pouvez les partager sur GitHub ou via notre [serveur Discord](https://discord.gg/AgXnGUaG7u)
 
-## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Playlist de Dev ! 
+Une Playlist pour développer tous ses projets tranquillement, et énergiquement, c'est juste ici !
+[![MIAGENDA | DevMode](https://github.com/LeMustelide/front-miagenda/assets/110120469/3b6931c3-872d-48a9-9bcc-afdc4ae85ee4)](https://open.spotify.com/playlist/2rjNo8LqvRY3FxusPtqoX7?si=0036ba918d5c4c94)
