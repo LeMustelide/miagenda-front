@@ -11,11 +11,26 @@ button {
   border: none;
 }
 
-.head{
+a {
+  text-decoration: none;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.timetable-container {
+  width: 100%;
+}
+
+.head {
   display: flex;
   margin-left: 32px;
   margin-right: 32px;
   justify-content: space-between;
+  height: 100px;
 
   div {
     display: flex;
@@ -35,10 +50,15 @@ button {
     font-weight: 600;
     color: #7e8798;
   }
+  .not-today {
+    background-color: #f3f5f7;
+    color: #000000 !important;
+  }
   a {
     text-decoration: none;
     color: #a3a3a3;
     font-weight: 600;
+    cursor: pointer;
   }
   .switcher {
     padding: 4px 12px;
@@ -46,7 +66,7 @@ button {
     background-color: #f3f5f7;
     height: 40px;
     .active {
-      background-color: #FFFFFFFF;
+      background-color: #ffffffff;
       border-radius: 6px;
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
       font-weight: 600;
@@ -59,20 +79,24 @@ button {
 
 .timetable {
   display: grid;
-  grid-template-areas:
-    ". week"
-    "time content";
   grid-template-columns: 100px;
   grid-template-rows: 60px;
+  grid-template-areas:
+    "head week"
+    "time content";
   overflow: auto;
   position: relative;
-  height: 90vh;
-
+  height: calc(100vh - 100px);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  // margin: 0px 8px 12px 12px ;
+  border: 1px solid #eaeaea;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
   .utc {
     background-color: #f3f5f7;
     text-align: center;
     display: flex;
-    border: 1px solid #eaeaea;
+    // border: 1px solid #eaeaea;
     justify-content: center;
     div {
       display: flex;
@@ -87,7 +111,7 @@ button {
     background-color: #f3f5f7;
     text-align: center;
     display: flex;
-    border: 1px solid #eaeaea;
+    border-left: 1px solid #eaeaea;
     div {
       display: flex;
       justify-content: center;
@@ -125,13 +149,14 @@ button {
     // 6 time intervals
     grid-template-rows: 0.5fr repeat(12, 1fr);
     font-size: 14px;
+    color: #9ea1a5;
     & > div {
       display: flex;
       align-items: start;
       justify-content: center;
       width: 100%;
       height: 100%;
-      transform: translateY(-5px);
+      transform: translateY(-12px);
     }
   }
   .content {
@@ -157,7 +182,9 @@ button {
       position: relative;
       transform: translateY(calc(var(--start) * 1%));
       background-color: #def5e6;
-      .event-content{
+      transition: 0.3s;
+      overflow: hidden;
+      .event-content {
         position: absolute;
         .title {
           font-weight: 500;
@@ -171,6 +198,10 @@ button {
           text-overflow: ellipsis;
         }
       }
+    }
+
+    .event:hover {
+      background-color: #c5f0d9;
     }
   }
   .current-line {
@@ -200,5 +231,163 @@ button {
       z-index: 11;
     }
   }
-  
+}
+
+.mobile-head {
+  display: none;
+}
+
+.mobile-timetable {
+  display: none;
+}
+
+@media screen and (max-width: 550px) {
+  .head {
+    display: none;
+  }
+  .mobile-head {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #000000;
+    color: white;
+    height: 192px;
+    padding: 18px 24px;
+    padding-bottom: 46px;
+    padding-right: 0;
+    margin-bottom: -28px;
+    .btn-group {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      .back {
+        display: flex;
+        justify-content: center;
+        background-color: white;
+        color: black;
+        width: 42px;
+        height: 42px;
+        border-radius: 100%;
+        padding: 12px;
+      }
+      select {
+        border: none;
+        background-color: #00000000;
+        color: white;
+        font-family: "Helvetica Neue", sans-serif;
+        font-size: 1.2rem;
+      }
+      option {
+        font-family: "Helvetica Neue", sans-serif;
+      }
+    }
+  }
+  .timetable {
+    display: none;
+  }
+  .mobile-timetable {
+    display: flex;
+    flex-direction: column;
+    border-radius: 22px;
+    background-color: white;
+    width: 100%;
+    max-height: calc(100vh - 164px);
+    padding: 22px 18px;
+    h1 {
+      margin: 0;
+      text-transform: capitalize;
+    }
+    p {
+      margin: 0;
+    }
+    .event-timetable {
+      display: grid;
+      grid-template-areas:
+        "time-mob content-mob";
+      grid-template-columns: 50px;
+      overflow: auto;
+      height: 100%;
+      
+      .hour {
+        display: grid;
+        grid-area: time-mob;
+        height: 100%;
+        grid-template-columns: 1fr;
+        grid-template-rows: 0.5fr repeat(12, 1fr);
+        
+        & > div {
+          transform: translateY(-10px);
+        }
+      }
+      .content {
+        grid-area: content-mob;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 0.5fr repeat(12, minmax(75px, 1fr));
+        & > div {
+          box-shadow: inset 0px -1px 0 0 #eceff1;
+          padding: 2px;
+        }
+        .event {
+          border-radius: 18px;
+          padding: 12px 12px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: flex-start;
+          font-size: 1rem;
+          height: calc(var(--size) * 100 / 60 * 1%);
+          z-index: 2;
+          position: relative;
+          transform: translateY(calc(var(--start) * 1%));
+          background-color: #d4dcec;
+          transition: 0.3s;
+          overflow: hidden;
+          .event-content {
+            .title {
+              font-weight: 500;
+              font-size: 0.9rem;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: wrap;
+            }
+            p {
+              margin: 0;
+              text-overflow: ellipsis;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.scroll-day {
+  overflow-x: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  a {
+    color: #4f4f4f;
+  }
+  .selected {
+    color: white;
+  }
+  .name {
+    font-size: 0.8rem;
+    margin: 0;
+    // font-family: 'Helvetica Neue', sans-serif;
+    font-weight: 300;
+  }
+  .num {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin: 0;
+    // font-family: 'Helvetica Neue', sans-serif;
+  }
+}
+
+.scroll-day::-webkit-scrollbar {
+  height: 0px;
+  background: transparent; /* make scrollbar transparent */
 }

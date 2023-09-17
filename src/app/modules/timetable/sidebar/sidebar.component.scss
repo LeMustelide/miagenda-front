@@ -1,0 +1,72 @@
+.sidebar {
+  width: 200px;
+  height: 100%;
+  border-top-right-radius: 18px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+@media screen and (max-width: 1000px) {
+  .sidebar {
+    width: 0px;
+    height: 100%;
+    border-top-right-radius: 18px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+}
+
+.class-selector {
+  padding: 18px;
+  height: 100px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  & > div {
+    gap: 8px;
+    width: 100%;
+  }
+  select {
+    border: none;
+    font-weight: 700;
+    flex-grow: 1;
+  }
+}
+
+hr {
+  border: 1px solid #eaeaea;
+  margin-top: 0px;
+  margin-bottom: 18px;
+}
+
+.calendar-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  .top {
+    background-color: #ff7269;
+    height: 8px;
+    width: 100%;
+  }
+  .content {
+    background-color: #ffffff;
+    height: calc(100% - 12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+}
+
+.content {
+  hr {
+    margin: 18px 18px;
+  }
+}
+
+.title {
+  font-family: "Dela Gothic One", cursive;
+  font-size: 1.4rem;
+}

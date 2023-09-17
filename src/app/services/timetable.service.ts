@@ -10,7 +10,7 @@ export class TimetableService {
 
   constructor(private http: HttpClient) { }
 
-  getSchedule(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  getSchedule(icalUrl: string, startDate?: string, endDate?: string): Observable<any> {
+    return this.http.get(this.apiUrl+'?ical_url='+icalUrl+(startDate?('&start_date='+startDate):'')+(endDate ? ('&end_date='+endDate):''));
   }
 }

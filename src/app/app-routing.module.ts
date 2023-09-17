@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   { path: '',   redirectTo: 'timetable', pathMatch: 'full' },
-  { path: 'timetable', loadChildren: () => import('./modules/timetable/timetable.module').then(m => m.TimetableModule) }
+  { path: 'timetable', loadChildren: () => import('./modules/timetable/timetable.module').then(m => m.TimetableModule) },
+  { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) }
 ];
 
 @NgModule({

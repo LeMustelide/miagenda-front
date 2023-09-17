@@ -1,104 +1,171 @@
-<div class="head">
-  <div>
-    <h1>{{ date | date : "MMMM y" }}</h1>
-    <button class="today">Aujourd'hui</button>
-    <a>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="feather feather-chevron-left"
-        viewBox="0 0 24 24"
-      >
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </a>
-    <a>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="feather feather-chevron-right"
-        viewBox="0 0 24 24"
-      >
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </a>
-    <app-group-selector
-      (groupTDChanged)="handleGroupTDChange($event)"
-      (groupTPChanged)="handleGroupTPChange($event)"
-      (alternantChanged)="handleAlternantChange($event)"
-    ></app-group-selector>
-    <!-- <p>Votre groupe sélectionné est: {{ selectedGroupTD }}</p> -->
-  </div>
-  <div>
-    <a href="github.com">
-      <i class="fab fa-github"></i>
-    </a>
-    <div class="switcher">
-      <button class="switcher-item">Jour</button>
-      <button class="switcher-item active">Semaine</button>
-    </div>
-  </div>
-</div>
-<div class="timetable">
-  <div class="current-line" [style.top]="getCurrentLinePosition()">
-    <p>
-      {{ date | date : "HH:mm" }}
-    </p>
-    <hr />
-  </div>
-  <div class="utc">
-    <div>UTC +2</div>
-  </div>
-  <div class="day-name">
-    <div *ngFor="let day of weekDays">
-      {{ day | date : "EEE" | uppercase }}
-      <p class="num">
-        {{ day | date : "d" }}
-      </p>
-    </div>
-  </div>
-  <div class="time-interval">
-    <div></div>
-    <div *ngFor="let time of timeIntervals">
-      {{ time.split("-")[0] }}
-    </div>
-  </div>
-  <div class="content">
-    <ng-container *ngFor="let day of weekDays">
-      <div></div>
-    </ng-container>
-    <ng-container *ngFor="let time of timeIntervals">
-      <ng-container *ngFor="let day of weekDays">
-        <div *ngIf="getEvent(day, time); let event">
-          <div
-            class="event accent-orange-gradient"
-            style="--size:{{ getEventDuration(event) }}; --start:{{
-              getEventStart(event)
-            }}"
+<div class="main-container">
+  <app-sidebar
+    (tdChange)="handleGroupTDChange($event)"
+    (tpChanged)="handleGroupTPChange($event)"
+    (alternantChanged)="handleAlternantChange($event)"
+  > </app-sidebar>
+  <div class="timetable-container">
+    <div class="head">
+      <div>
+        <h1>{{ date | date : "MMMM y" }}</h1>
+        <a (click)="today()" class="today" [ngClass]="{ 'not-today': !isToday }"
+          >Aujourd'hui</a
+        >
+        <a (click)="previousWeek()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-chevron-left"
+            viewBox="0 0 24 24"
           >
-            <div class="event-content">
-              <p class="title">{{ event.title }}</p>
-              <p class="time">{{ event.start_time }} - {{ event.end_time }}</p>
-              <!-- <p class="groups">{{ event.groups }}</p> -->
-              <p class="location">{{ event.location }}</p>
-              <p class="professor">{{ event.professor }}</p>
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </a>
+        <a (click)="nextWeek()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-chevron-right"
+            viewBox="0 0 24 24"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      </div>
+      <div>
+        <a href="https://github.com/LeMustelide/front-miagenda">
+          <i class="fab fa-github"></i>
+        </a>
+        <div class="switcher">
+          <button class="switcher-item">Jour</button>
+          <button class="switcher-item active">Semaine</button>
+        </div>
+      </div>
+    </div>
+    <div class="mobile-head">
+      <div class="btn-group">
+        <a class="back" routerLink="/home" >
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <select>
+          <option value="09-2023" selected="select">Septembre 2023</option>
+        </select>
+      </div>
+      <div class="scroll-day">
+        <a (click)="setCurrentDay(day)" [ngClass]="{ 'selected': day.getFullYear() === currentDay.getFullYear() && day.getMonth() === currentDay.getMonth() && day.getDate() === currentDay.getDate() }" *ngFor="let day of weekDays">
+          <p class="name">
+            {{ day | date : "EEE" }}
+          </p>
+          <p class="num">
+            {{ day | date : "d" }}
+          </p>
+        </a>
+      </div>
+    </div>
+    <div class="timetable">
+      <div class="current-line" [style.top]="getCurrentLinePosition()">
+        <p>
+          {{ date | date : "HH:mm" }}
+        </p>
+        <hr />
+      </div>
+      <div class="utc">
+        <div>UTC +2</div>
+      </div>
+      <div class="day-name">
+        <div *ngFor="let day of weekDays" >
+          {{ day | date : "EEE" | uppercase }}
+          <p class="num">
+            {{ day | date : "d" }}
+          </p>
+        </div>
+      </div>
+      <div class="time-interval">
+        <div></div>
+        <div *ngFor="let time of timeIntervals">
+          {{ time.split("-")[0] }}
+        </div>
+      </div>
+      <div class="content">
+        <ng-container *ngFor="let day of weekDays">
+          <div></div>
+        </ng-container>
+        <ng-container *ngFor="let time of timeIntervals">
+          <ng-container *ngFor="let day of weekDays">
+            <div *ngIf="getEvent(day, time); let event">
+              <div
+                class="event accent-orange-gradient"
+                style="--size:{{ getEventDuration(event) }}; --start:{{
+                  getEventStart(event)
+                }}"
+              >
+                <div class="event-content">
+                  <p class="title">{{ event.title }}</p>
+                  <p class="time">
+                    {{ event.start_time }} - {{ event.end_time }}
+                  </p>
+                  <!-- <p class="groups">{{ event.groups }}</p> -->
+                  <p class="location">{{ event.location }}</p>
+                  <p class="professor">{{ event.professor }}</p>
+                </div>
+              </div>
             </div>
+            <div *ngIf="!getEvent(day, time)"></div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+    <div class="mobile-timetable">
+      <p class="event-number">
+        4 Cours
+      </p>
+      <h1> {{ currentDay | date : "EEEE" }} </h1>
+      <div class="event-timetable">
+        <div class="hour">
+          <div></div>
+          <div *ngFor="let time of timeIntervals">
+            {{ time.split("-")[0].replace("h", ":") }}
           </div>
         </div>
-        <div *ngIf="!getEvent(day, time)"></div>
-      </ng-container>
-    </ng-container>
+        <div class="event-list">
+          <div class="content">
+            <div></div>
+            <ng-container *ngFor="let time of timeIntervals">
+              <div *ngIf="getEvent(currentDay, time); let event">
+                <div
+                  class="event accent-orange-gradient"
+                  style="--size:{{ getEventDuration(event) }}; --start:{{
+                    getEventStart(event)
+                  }}"
+                >
+                  <div class="event-content">
+                    <p class="title">{{ event.title }}</p>
+                    <p class="time">
+                      {{ event.start_time }} - {{ event.end_time }}
+                    </p>
+                    <!-- <p class="groups">{{ event.groups }}</p> -->
+                    <p class="location">{{ event.location }}</p>
+                    <p class="professor">{{ event.professor }}</p>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="!getEvent(currentDay, time)"></div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

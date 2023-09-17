@@ -9,6 +9,9 @@ import { LOCALE_ID } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './shared/components/header/header.component';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { TimetableRoutingModule } from './modules/timetable/timetable.routes';
 
 registerLocaleData(localeFr);
 
@@ -21,7 +24,10 @@ registerLocaleData(localeFr);
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    MatExpansionModule,
+    BrowserAnimationsModule,
+    TimetableRoutingModule 
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }],
   bootstrap: [AppComponent]
