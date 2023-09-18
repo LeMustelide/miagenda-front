@@ -75,12 +75,6 @@
       </div>
     </div>
     <div class="timetable">
-      <div class="current-line" [style.top]="getCurrentLinePosition()">
-        <p>
-          {{ date | date : "HH:mm" }}
-        </p>
-        <hr />
-      </div>
       <div class="utc">
         <div>UTC +2</div>
       </div>
@@ -99,6 +93,12 @@
         </div>
       </div>
       <div class="content">
+        <div class="current-line" [style.top]="getCurrentLinePosition()">
+          <p>
+            {{ date | date : "HH:mm" }}
+          </p>
+          <hr />
+        </div>
         <ng-container *ngFor="let day of weekDays">
           <div></div>
         </ng-container>

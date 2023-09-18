@@ -216,13 +216,15 @@ export class TimetableComponent implements OnInit {
     // Décalage dû au demi-intervalle
     const initialOffset = 0.5;
     const hourPosition = initialOffset + (this.date.getHours() - 8); // 1/2fr pour chaque heure
-    const minutePosition = this.date.getMinutes() * (1 / 120); // fraction de 1/2fr pour chaque minute
+    const minutePosition = this.date.getMinutes() * (1 / 60); // fraction de 1/2fr pour chaque minute
 
-    const totalPosition = hourPosition + minutePosition;
+    const totalPosition = minutePosition + hourPosition;
+    console.log(totalPosition);
 
     // Convertissons le total en pourcentage par rapport à la grille entière.
-    const percentagePerFr = 100 / 12;
-    const positionPercentage = totalPosition * percentagePerFr;
+    const percentagePerFr = 100 / 12.5;
+    let positionPercentage = totalPosition * percentagePerFr;
+    console.log(percentagePerFr+ ' !');
 
     return positionPercentage + '%';
   }
