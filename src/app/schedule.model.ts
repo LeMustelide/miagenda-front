@@ -1,13 +1,13 @@
 // schedule.model.ts
 
 export interface ScheduleItem {
+    title: string;
     date: string;
     end_time: string;
     groups: string[];
     location: string;
     professor: string;
     start_time: string;
-    title: string;
 }
 
 export interface ScheduleData {

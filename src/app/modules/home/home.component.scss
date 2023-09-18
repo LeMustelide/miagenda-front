@@ -1,20 +1,90 @@
-h1, h2 {
-    margin: 0;
+h1,
+h2 {
+  margin: 0;
 }
 
 .main-container {
-    display: flex;
-    flex-direction: row;
-    max-height: 100vh;
-    padding: 24px 16px 6px 16px;
-    .head {
-        h2 {
-            color: #a5a5a5;
+  .head{
+    margin-top: 24px;
+  }
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  padding: 0px 16px 6px 16px;
+  gap: 12px;
+  .group-list:first-child > .title {
+    margin-top: 0px;
+  }
+  .title {
+    font-size: 1.3rem;
+    font-weight: 700 !important;
+  }
+  h2 {
+    color: #a5a5a5;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  .card-black {
+    background-color: black;
+    border-radius: 18px;
+    padding: 14px;
+    padding-top: 18px;
+    color: white;
+    & > p {
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0px;
+    }
+    .hint {
+      color: #a5a5a5 !important;
+      font-size: 0.7rem !important;
+    }
+    .event {
+      margin: 24px 12px;
+      border-radius: 8px;
+      padding: 6px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      font-size: 0.7rem;
+      height: calc(var(--size) * 100 / 60 * 1%);
+      z-index: 2;
+      transform: translateY(calc(var(--start) * 1%));
+      border: 2px solid #a5a5a5;
+      transition: 0.3s;
+      overflow: hidden;
+      .event-content {
+        .title {
+          font-weight: 500;
+          font-size: 0.9rem;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: wrap;
         }
+        p {
+          margin: 0;
+          text-overflow: ellipsis;
+        }
+      }
     }
-    .card-black {
-        background-color: black;
-        border-radius: 18px;
-        color: white;
+    .percent {
+      font-size: 2.8rem;
+      font-weight: 600;
+      margin: 0px;
     }
+  }
+}
+
+.group-list {
+  display: flex;
+  flex-direction: column;
+  hr {
+    margin-left: 0;
+    margin-right: 0;
+    border: 1px solid #dedede9a;
+    border-radius: 8px;
+  }
 }

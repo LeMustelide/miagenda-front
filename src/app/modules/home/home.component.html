@@ -1,9 +1,82 @@
 <div class="main-container">
-    <div class="head">
-        <h1>Bonjour</h1>
-        <h2>Toi</h2>
+  <div class="head">
+    <h1 class="title">Bonjour</h1>
+    <h2>Toi</h2>
+  </div>
+  <div routerLink="/timetable" class="card-black">
+    <p class="hint">
+      {{ date | date : "dd MMMM, EEEE" }}
+    </p>
+    <p>Prochain cours dans 2h{{ nextCourse.date | date : "HH:mm" }}</p>
+    <div class="event">
+      <div class="event-content">
+        <p class="title">{{ nextCourse.title }}</p>
+        <p class="time">
+          {{ nextCourse.start_time }} - {{ nextCourse.end_time }}
+        </p>
+        <!-- <p class="groups">{{ event.groups }}</p> -->
+        <p class="location">{{ nextCourse.location }}</p>
+        <p class="professor">{{ nextCourse.professor }}</p>
+      </div>
     </div>
-    <div class="card-black">
-        
+    <p class="hint">10/12 cours</p>
+    <p class="percent">85%</p>
+  </div>
+  <div class="group">
+    <div class="group-list">
+      <p class="title">Groupe de TD</p>
+      <mat-checkbox
+        class="example-margin"
+        [(ngModel)]="tdGroup.TD1"
+        (change)="onTdChange('TD1')"
+        >TD1</mat-checkbox
+      >
+      <hr />
+      <mat-checkbox
+        class="example-margin"
+        [(ngModel)]="tdGroup.TD2"
+        (change)="onTdChange('TD2')"
+        >TD2</mat-checkbox
+      >
     </div>
+    <div class="group-list">
+      <p class="title">Groupe de TP</p>
+      <mat-checkbox
+        class="example-margin"
+        [(ngModel)]="tpGroup.TP1"
+        (change)="onTpChange('TP1')"
+        >TP1</mat-checkbox
+      >
+      <hr />
+      <mat-checkbox
+        class="example-margin"
+        [(ngModel)]="tpGroup.TP2"
+        (change)="onTpChange('TP2')"
+        >TP2</mat-checkbox
+      >
+      <hr />
+      <mat-checkbox
+        class="example-margin"
+        [(ngModel)]="tpGroup.TP3"
+        (change)="onTpChange('TP3')"
+        >TP3</mat-checkbox
+      >
+    </div>
+    <div class="group-list">
+      <p class="title">Formation</p>
+      <mat-checkbox
+          class="example-margin"
+          [checked]="!alternant"
+          (change)="setAlternant(!alternant)"
+          >Initiale</mat-checkbox
+        >
+        <hr />
+        <mat-checkbox
+          class="example-margin"
+          [checked]="alternant"
+          (change)="setAlternant(!alternant)"
+          >Alternant</mat-checkbox
+        >
+    </div>
+  </div>
 </div>

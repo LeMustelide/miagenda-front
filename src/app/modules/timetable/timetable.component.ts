@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TimetableService } from 'src/app/services/timetable.service';
 import { ScheduleData, ScheduleItem } from '../../schedule.model';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-timetable',
@@ -33,12 +34,15 @@ export class TimetableComponent implements OnInit {
   isToday: boolean = true;
   currentDay!: Date;
 
-  constructor(private timetableService: TimetableService) {}
+  constructor(private timetableService: TimetableService, private cookieService: CookieService) {}
 
   ngOnInit(): void {
     this.date = new Date();
     this.loadSchedule();
     this.generateWeek();
+    this.selectedGroupTD = this.cookieService.get('tdGroup');
+    this.selectedGroupTP = this.cookieService.get('tpGroup');
+    this.alternant = this.cookieService.get('alternant') === 'true';
     this.currentDay = new Date().getDay() === 0 ? this.date : new Date();
   }
 
