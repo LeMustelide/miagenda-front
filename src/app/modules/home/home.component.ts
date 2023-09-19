@@ -12,6 +12,8 @@ type TPGroupKeys = 'TP1' | 'TP2' | 'TP3';
 })
 export class HomeComponent {
   date: Date = new Date();
+  thirtyDays = 365 * 24 * 60 * 60 * 1000; // 30 jours en millisecondes
+  expirationDate = new Date(new Date().getTime() + this.thirtyDays);
   nextCourse!: ScheduleItem;
   tdGroup = {
     TD1: false,
@@ -50,7 +52,7 @@ export class HomeComponent {
         this.tdGroup[group as TDGroupKeys] = false;
       }
     });
-    this.cookieService.set('tdGroup', this.tdGroup.TD1 ? 'TD1' : 'TD2');
+    this.cookieService.set('tdGroup', this.tdGroup.TD1 ? 'TD1' : 'TD2', this.expirationDate);
   }
 
   onTpChange(checkedGroup: TPGroupKeys) {
@@ -59,11 +61,11 @@ export class HomeComponent {
         this.tpGroup[group as TPGroupKeys] = false;
       }
     });
-    this.cookieService.set('tpGroup', this.tpGroup.TP1 ? 'TP1' : this.tpGroup.TP2 ? 'TP2' : 'TP3');
+    this.cookieService.set('tpGroup', this.tpGroup.TP1 ? 'TP1' : this.tpGroup.TP2 ? 'TP2' : 'TP3', this.expirationDate);
   }
 
   setAlternant(isInitiale: boolean) {
     this.alternant = isInitiale;
-    this.cookieService.set('alternant', isInitiale ? 'true' : 'false');
+    this.cookieService.set('alternant', isInitiale ? 'true' : 'false', this.expirationDate);
   }
 }

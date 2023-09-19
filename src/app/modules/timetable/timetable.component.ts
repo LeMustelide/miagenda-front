@@ -122,7 +122,7 @@ export class TimetableComponent implements OnInit {
               (
                 (this.alternant && item.groups.includes('Gr TP 2ALT'))
                 ||
-                ( !this.alternant && item.groups.includes('Gr TP2FI'))
+                ( !this.alternant && item.groups.includes('Gr  TP2FI'))
                 ||
                 ( this.alternant && item.groups.includes('ANG2ALT') )
                 ||

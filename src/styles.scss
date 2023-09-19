@@ -5,6 +5,12 @@ body {
   overflow: hidden;
 }
 
+@media screen and (max-width: 600px) {
+  body {
+    overflow: auto;
+  }
+}
+
 mat-expansion-panel {
   box-shadow: none !important;
   mat-expansion-panel-header {
