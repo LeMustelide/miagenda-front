@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { ScheduleItem } from '../../schedule.model';
-import { CookieService } from 'ngx-cookie-service';
-
-type TDGroupKeys = 'TD1' | 'TD2';
-type TPGroupKeys = 'TP1' | 'TP2' | 'TP3';
+import { GroupsService } from 'src/app/services/groups/groups.service';
+import { IGroupType } from '../../shared/interfaces/class.interface';
 
 @Component({
   selector: 'app-home',
@@ -12,23 +10,11 @@ type TPGroupKeys = 'TP1' | 'TP2' | 'TP3';
 })
 export class HomeComponent {
   date: Date = new Date();
-  thirtyDays = 365 * 24 * 60 * 60 * 1000; // 30 jours en millisecondes
-  expirationDate = new Date(new Date().getTime() + this.thirtyDays);
   nextCourse!: ScheduleItem;
-  tdGroup = {
-    TD1: false,
-    TD2: false,
-  };
+  groups: IGroupType[] = [];
+  selectedGroups: { [key: string]: boolean } = {};
 
-  tpGroup = {
-    TP1: false,
-    TP2: false,
-    TP3: false,
-  };
-
-  alternant: boolean = true;
-
-  constructor(private cookieService: CookieService) {
+  constructor(private groupsService: GroupsService) {
     this.nextCourse = {
       title: 'Next course',
       date: '24/09/2023',
@@ -41,31 +27,22 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
-    this.tdGroup = this.cookieService.get('tdGroup') === 'TD1' ? { TD1: true, TD2: false } : { TD1: false, TD2: true };
-    this.tpGroup = this.cookieService.get('tpGroup') === 'TP1' ? { TP1: true, TP2: false, TP3: false } : this.cookieService.get('tpGroup') === 'TP2' ? { TP1: false, TP2: true, TP3: false } : { TP1: false, TP2: false, TP3: true };
-    this.alternant = this.cookieService.get('alternant') === 'true';
-  }
-
-  onTdChange(checkedGroup: TDGroupKeys) {
-    Object.keys(this.tdGroup).forEach((group) => {
-      if (group !== checkedGroup) {
-        this.tdGroup[group as TDGroupKeys] = false;
+    this.groups = this.groupsService.getGroupsTypeForClass();
+  
+    for (let groupType of this.groups) {
+      for (let group of groupType.groups) {
+        if (!(group in this.selectedGroups)) {
+          this.selectedGroups[group] = false;
+        }
       }
-    });
-    this.cookieService.set('tdGroup', this.tdGroup.TD1 ? 'TD1' : 'TD2', this.expirationDate);
-  }
+    }
+  }  
 
-  onTpChange(checkedGroup: TPGroupKeys) {
-    Object.keys(this.tpGroup).forEach((group) => {
-      if (group !== checkedGroup) {
-        this.tpGroup[group as TPGroupKeys] = false;
-      }
+  onGroupChange(groupType: string, groupName: string) {
+    this.groupsService.getGroupsOfTypes(groupType).forEach((group) => {
+      this.selectedGroups[group] = false;
     });
-    this.cookieService.set('tpGroup', this.tpGroup.TP1 ? 'TP1' : this.tpGroup.TP2 ? 'TP2' : 'TP3', this.expirationDate);
-  }
-
-  setAlternant(isInitiale: boolean) {
-    this.alternant = isInitiale;
-    this.cookieService.set('alternant', isInitiale ? 'true' : 'false', this.expirationDate);
+    this.groupsService.onGroupChange(groupType, groupName);
+    this.selectedGroups[groupName] = true;
   }
 }
