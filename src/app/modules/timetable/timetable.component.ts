@@ -10,9 +10,7 @@ import { GroupsService } from 'src/app/services/groups/groups.service';
   styleUrls: ['./timetable.component.scss'],
 })
 export class TimetableComponent implements OnInit {
-  selectedGroupTD: string = '';
-  selectedGroupTP: string = '';
-  alternant: boolean = true;
+  selectedGroups: { [key: string]: boolean } = {};
   public scheduleData: ScheduleData | null = null;
 
   public timeIntervals: string[] = [
@@ -44,11 +42,11 @@ export class TimetableComponent implements OnInit {
   ngOnInit(): void {
     this.groupsService.selectedClass = 'M1 MIAGE';
     this.date = new Date();
-    this.loadSchedule();
+    this.groupsService.loadAdeGroups().then(() => {
+      //this.groupsService.findIcalUrl(this.selectedGroups);
+      this.loadSchedule();
+    });
     this.generateWeek();
-    this.selectedGroupTD = this.cookieService.get('tdGroup');
-    this.selectedGroupTP = this.cookieService.get('tpGroup');
-    this.alternant = this.cookieService.get('alternant') === 'true';
     this.currentDay = new Date().getDay() === 0 ? this.date : new Date();
   }
 
@@ -78,6 +76,7 @@ export class TimetableComponent implements OnInit {
       this.date.getDate() === new Date().getDate() &&
       this.date.getMonth() === new Date().getMonth() &&
       this.date.getFullYear() === new Date().getFullYear();
+    this.loadSchedule();
   }
 
   nextWeek(): void {
@@ -92,6 +91,7 @@ export class TimetableComponent implements OnInit {
       this.date.getDate() === new Date().getDate() &&
       this.date.getMonth() === new Date().getMonth() &&
       this.date.getFullYear() === new Date().getFullYear();
+    this.loadSchedule();
   }
 
   today(): void {
@@ -102,34 +102,36 @@ export class TimetableComponent implements OnInit {
   }
 
   loadSchedule(): void {
+    console.log(this.groupsService.getSelectedAdeGroups());    
     this.timetableService
       .getSchedule(
-        
+        this.cookieService.get('icalUrl'),
       )
       .subscribe((data: ScheduleData) => {
         this.scheduleData = {
           ...data,
           data: data.data.filter((item) => {
+            // vérifie si l'événement est dans la semaine séléctionné et si il contient au moins un groupe sélectionné
             return (
-              !item.groups 
+              this.weekDays.some(
+                (day) =>
+                  this.stringToDate(item.date).getDate() === day.getDate() &&
+                  this.stringToDate(item.date).getMonth() === day.getMonth() &&
+                  this.stringToDate(item.date).getFullYear() === day.getFullYear()
+              ) &&
+              item.groups.some((group) => this.groupsService.getSelectedAdeGroups().includes(group))
             );
           }),
         };
       });
   }
 
-  handleGroupTDChange(groupTD: string) {
-    this.selectedGroupTD = groupTD;
-    this.loadSchedule();
-  }
-
-  handleGroupTPChange(groupTP: string) {
-    this.selectedGroupTP = groupTP;
-    this.loadSchedule();
-  }
-
-  handleAlternantChange(alternant: boolean) {
-    this.alternant = alternant;
+  onGroupChange({groupType, groupName}: {groupType: string, groupName: string}) {
+    this.groupsService.getGroupsOfTypes(groupType).forEach((group: string) => {
+      this.selectedGroups[group] = false;
+    });
+    this.groupsService.onGroupChange(groupType, groupName);
+    this.selectedGroups[groupName] = true;
     this.loadSchedule();
   }
 

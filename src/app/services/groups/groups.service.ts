@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import groupData from './groups-config.json';
-import groupAdeData from './ade-groups-m1miage.json';
 import { IClass } from '../../shared/interfaces/class.interface';
 import { IGroupType } from '../../shared/interfaces/class.interface';
 import { IAdeGroup } from '../../shared/interfaces/adeGroup.interface';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -14,9 +14,10 @@ export class GroupsService {
   thirtyDays = 365 * 24 * 60 * 60 * 1000;
   expirationDate = new Date(new Date().getTime() + this.thirtyDays);
   classSelected: string = 'M1 MIAGE';
-  adeGroups: IAdeGroup[] = groupAdeData;  
+  adeGroups: IAdeGroup[] = {} as IAdeGroup[];
+  private class: IClass = this.classes.find((c: any) => c.name === this.classSelected) || {} as IClass;
 
-  constructor(private cookieService: CookieService) {}
+  constructor(private cookieService: CookieService, private http: HttpClient) { }
 
   getGroupsTypeForClass(className: string = this.classSelected): IGroupType[] {
     let groups: IGroupType[] = [];
@@ -30,16 +31,14 @@ export class GroupsService {
 
   onGroupChange(groupType: string, checkedGroup: string, className: string = this.classSelected) {
     const classConfig = this.getGroupsTypeForClass(className);
-    console.log(classConfig);
     if (classConfig.find((group: any) => group.name === groupType)) {
-      console.log(classConfig);
       const groups: string[] = classConfig.find((group: any) => group.name === groupType)?.groups || [];
       groups.forEach((group: string) => {
         if (group !== checkedGroup) {
           this.cookieService.delete(group);
         } else {
           this.cookieService.set(group, 'true', this.expirationDate);
-          console.log(this.cookieService.get(group));
+          this.cookieService.get(group);
         }
       });
     }
@@ -71,12 +70,58 @@ export class GroupsService {
         this.classSelected = className;
       }
     });
-    // TO DO Set adegroups
+    this.class = this.classes.find((c: any) => c.name === this.classSelected) || {} as IClass;
+    this.loadAdeGroups();
     this.cookieService.set('selectedClass', className, this.expirationDate);
   }
 
   getAdeGroups(): IAdeGroup[] {
     return this.adeGroups;
+  }
+
+  loadAdeGroups(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.http.get<IAdeGroup[]>(`assets/`+this.class.adeConfig).subscribe((data: IAdeGroup[]) => {
+        this.adeGroups = data;
+        resolve();
+      }, (error) => {
+        reject(error);
+      });
+    });
+  }
+
+  findIcalUrl(selectedGroups: { [key: string]: boolean }){
+    // vérifie pour chaque groups si la propriété "ical" n'est pas vide
+    let url = null;
+    for (let group in selectedGroups) {
+      console.log(group);
+      if (selectedGroups[group] || group === 'default') {
+        const adeGroup = this.adeGroups.find((g) => g.parentGroups.includes(group));
+        if (adeGroup && adeGroup.ical) {
+          url = adeGroup.ical;
+          break;
+        }
+      }
+    };
+    this.cookieService.set('icalUrl', url || '', this.expirationDate);
+  }
+
+  // Cette fonction retourne les groupes ADE qui on tout mes groupes parent présent dans les cookies
+  getSelectedAdeGroups(): string[] {
+    const selectedAdeGroups: string[] = [];
+    for (let adeGroup of this.adeGroups) {
+      let isGroupSelected = true;
+      for (let parentGroup of adeGroup.parentGroups) {
+        if (!this.isGroupSelected(parentGroup) && parentGroup !== 'default') {
+          isGroupSelected = false;
+          break;
+        }
+      }
+      if (isGroupSelected) {
+        selectedAdeGroups.push(...adeGroup.adeNames);
+      }
+    }
+    return selectedAdeGroups;
   }
 
 }

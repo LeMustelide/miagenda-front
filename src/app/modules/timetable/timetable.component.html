@@ -1,8 +1,6 @@
 <div class="main-container">
   <app-sidebar
-    (tdChange)="handleGroupTDChange($event)"
-    (tpChanged)="handleGroupTPChange($event)"
-    (alternantChanged)="handleAlternantChange($event)"
+    (onGroupChange)="onGroupChange($event)"
   > </app-sidebar>
   <div class="timetable-container">
     <div class="head">
@@ -60,7 +58,9 @@
           <i class="fas fa-arrow-left"></i>
         </a>
         <select>
-          <option value="09-2023" selected="select">Septembre 2023</option>
+          <option value="{{date}}" selected="select">{{ date | date : "MMMM YYYY" }}</option>
+          <!-- liste des 6 prochains mois dynamique -->
+          <option value="{{date}}">{{ date.add(3, "month") | date : "MMMM YYYY" }}</option>
         </select>
       </div>
       <div class="scroll-day">

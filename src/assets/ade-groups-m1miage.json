@@ -4,7 +4,6 @@
             "default"
          ],
         "adeNames": [
-            "M1 MIAGE",
             ""
         ]
     },
@@ -20,7 +19,7 @@
     },
     {
         "parentGroups": [
-            "Formation Initiale"
+            "Formation initiale"
         ],
         "adeNames": [
             "Gr  FI"

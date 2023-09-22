@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ScheduleItem } from '../../schedule.model';
 import { GroupsService } from 'src/app/services/groups/groups.service';
 import { IGroupType } from '../../shared/interfaces/class.interface';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,7 @@ export class HomeComponent {
   groups: IGroupType[] = [];
   selectedGroups: { [key: string]: boolean } = {};
 
-  constructor(private groupsService: GroupsService) {
+  constructor(private groupsService: GroupsService, private cookieService: CookieService) {
     this.nextCourse = {
       title: 'Next course',
       date: '24/09/2023',
@@ -32,7 +33,7 @@ export class HomeComponent {
     for (let groupType of this.groups) {
       for (let group of groupType.groups) {
         if (!(group in this.selectedGroups)) {
-          this.selectedGroups[group] = false;
+          this.selectedGroups[group] = this.cookieService.get(group) === "true" || false;
         }
       }
     }
@@ -44,5 +45,6 @@ export class HomeComponent {
     });
     this.groupsService.onGroupChange(groupType, groupName);
     this.selectedGroups[groupName] = true;
+    this.groupsService.findIcalUrl(this.selectedGroups);
   }
 }
