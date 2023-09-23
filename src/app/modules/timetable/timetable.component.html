@@ -58,13 +58,17 @@
           <i class="fas fa-arrow-left"></i>
         </a>
         <select>
+          <option *ngFor="let month of previousSixMonths" [value]="month | date : 'yyyy-MM'">
+            {{ month | date : "MMMM YYYY" }}
+          </option>
           <option value="{{date}}" selected="select">{{ date | date : "MMMM YYYY" }}</option>
-          <!-- liste des 6 prochains mois dynamique -->
-          <option value="{{date}}">{{ date.add(3, "month") | date : "MMMM YYYY" }}</option>
+          <option *ngFor="let month of nextSixMonths" [value]="month | date : 'yyyy-MM'">
+            {{ month | date : "MMMM YYYY" }}
+          </option>
         </select>
       </div>
-      <div class="scroll-day">
-        <a (click)="setCurrentDay(day)" [ngClass]="{ 'selected': day.getFullYear() === currentDay.getFullYear() && day.getMonth() === currentDay.getMonth() && day.getDate() === currentDay.getDate() }" *ngFor="let day of weekDays">
+      <div #scrollBox class="scroll-day">
+        <a (click)="setCurrentDay(day)" [ngClass]="{ 'selected': day.getFullYear() === currentDay.getFullYear() && day.getMonth() === currentDay.getMonth() && day.getDate() === currentDay.getDate() }" *ngFor="let day of daysOfMonth">
           <p class="name">
             {{ day | date : "EEE" }}
           </p>
@@ -129,7 +133,7 @@
     </div>
     <div class="mobile-timetable">
       <p class="event-number">
-        4 Cours
+        {{ eventNumberOnDay }} Cours
       </p>
       <h1> {{ currentDay | date : "EEEE" }} </h1>
       <div class="event-timetable">

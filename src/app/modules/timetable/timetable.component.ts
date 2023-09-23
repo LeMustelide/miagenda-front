@@ -1,17 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  AfterViewInit,
+  ViewChild,
+} from '@angular/core';
 import { TimetableService } from 'src/app/services/timetable.service';
 import { ScheduleData, ScheduleItem } from '../../schedule.model';
 import { CookieService } from 'ngx-cookie-service';
 import { GroupsService } from 'src/app/services/groups/groups.service';
+
 
 @Component({
   selector: 'app-timetable',
   templateUrl: './timetable.component.html',
   styleUrls: ['./timetable.component.scss'],
 })
-export class TimetableComponent implements OnInit {
+export class TimetableComponent implements OnInit, AfterViewInit {
   selectedGroups: { [key: string]: boolean } = {};
   public scheduleData: ScheduleData | null = null;
+  @ViewChild('scrollBox') scrollBox!: ElementRef;
 
   public timeIntervals: string[] = [
     '08h00 - 09h00',
@@ -53,7 +61,7 @@ export class TimetableComponent implements OnInit {
   generateWeek(): void {
     let currentDayOfWeek = this.date.getDay();
     if (currentDayOfWeek === 0) {
-      this.date.setDate(this.date.getDate() + 1);
+      this.date.setDate(this.date.getDate());
     }
     currentDayOfWeek = this.date.getDay();
     const daysToMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1; // considérant que Sunday est 0 et Monday est 1
@@ -102,31 +110,35 @@ export class TimetableComponent implements OnInit {
   }
 
   loadSchedule(): void {
-    console.log(this.groupsService.getSelectedAdeGroups());    
     this.timetableService
-      .getSchedule(
-        this.cookieService.get('icalUrl'),
-      )
+      .getSchedule(this.cookieService.get('icalUrl'))
       .subscribe((data: ScheduleData) => {
-        this.scheduleData = {
-          ...data,
-          data: data.data.filter((item) => {
-            // vérifie si l'événement est dans la semaine séléctionné et si il contient au moins un groupe sélectionné
-            return (
-              this.weekDays.some(
-                (day) =>
-                  this.stringToDate(item.date).getDate() === day.getDate() &&
-                  this.stringToDate(item.date).getMonth() === day.getMonth() &&
-                  this.stringToDate(item.date).getFullYear() === day.getFullYear()
-              ) &&
-              item.groups.some((group) => this.groupsService.getSelectedAdeGroups().includes(group))
-            );
-          }),
+        const worker = new Worker('./assets/timetable-schedule-worker.js', {
+          type: 'module',
+        });
+        worker.postMessage({
+          data: data.data,
+          date: this.date,
+          selectedGroups: this.groupsService.getSelectedAdeGroups(),
+        });
+        worker.onmessage = (event) => {
+          this.scheduleData = {
+            ...data,
+            data: event.data,
+          };
+          worker.terminate();
         };
       });
   }
+  
 
-  onGroupChange({groupType, groupName}: {groupType: string, groupName: string}) {
+  onGroupChange({
+    groupType,
+    groupName,
+  }: {
+    groupType: string;
+    groupName: string;
+  }) {
     this.groupsService.getGroupsOfTypes(groupType).forEach((group: string) => {
       this.selectedGroups[group] = false;
     });
@@ -165,6 +177,9 @@ export class TimetableComponent implements OnInit {
 
   setCurrentDay(selectedDay: Date): void {
     this.currentDay = new Date(selectedDay);
+    setTimeout(() => {
+      this.centerOnSelected();
+    }, 0);
   }
 
   // Cette fonction retourne la durée d'un événement en minutes
@@ -202,4 +217,108 @@ export class TimetableComponent implements OnInit {
 
     return positionPercentage + '%';
   }
+
+  get nextSixMonths(): Date[] {
+    const today = new Date();
+    const months: Date[] = [];
+    for (let i = 1; i < 7; i++) {
+      const newDate = new Date(today);
+      newDate.setMonth(today.getMonth() + i);
+      months.push(newDate);
+    }
+    return months;
+  }
+
+  get previousSixMonths(): Date[] {
+    const today = new Date();
+    const months: Date[] = [];
+    for (let i = 1; i < 7; i++) {
+      const newDate = new Date(today);
+      newDate.setMonth(today.getMonth() - i);
+      months.push(newDate);
+    }
+    return months.reverse();
+  }
+
+  // donne la liste des jours du mois sélectionné
+  // rajoute aussi les jours du mois précendent si la première semaine du mois ne commence pas un lundi
+  // et les jours du mois suivant si la dernière semaine du mois ne fini pas un dimanche
+  get daysOfMonth(): Date[] {
+    const days: Date[] = [];
+    const month = this.date.getMonth();
+    const year = this.date.getFullYear();
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    const firstDayOfWeek = firstDayOfMonth.getDay();
+    const lastDayOfWeek = lastDayOfMonth.getDay();
+    const lastDayOfPreviousMonth = new Date(year, month, 0).getDate();
+    const lastDayOfNextMonth = new Date(year, month + 1, 0).getDate();
+
+    // rajoute les jours du mois précédent si la première semaine du mois ne commence pas un lundi
+    if (firstDayOfWeek !== 1) {
+      for (let i = firstDayOfWeek - 1; i > 0; i--) {
+        const newDate = new Date(firstDayOfMonth);
+        newDate.setDate(firstDayOfMonth.getDate() - i);
+        days.push(newDate);
+      }
+    }
+
+    // rajoute les jours du mois sélectionné
+    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+      const newDate = new Date(firstDayOfMonth);
+      newDate.setDate(i);
+      days.push(newDate);
+    }
+
+    // rajoute les jours du mois suivant si la dernière semaine du mois ne fini pas un dimanche
+    if (lastDayOfWeek !== 0) {
+      for (let i = 1; i <= 7 - lastDayOfWeek; i++) {
+        const newDate = new Date(lastDayOfMonth);
+        newDate.setDate(lastDayOfMonth.getDate() + i);
+        days.push(newDate);
+      }
+    }
+
+    return days;
+  }
+
+  ngAfterViewInit(): void {
+    this.centerOnSelected();
+  }
+
+  centerOnSelected() {
+    if (this.scrollBox) {
+      const selectedElem =
+        this.scrollBox.nativeElement.querySelector('.selected');
+      if (selectedElem) {
+        const boxWidth = this.scrollBox.nativeElement.offsetWidth;
+        const boxHalfWidth = boxWidth / 2;
+        const selectedElemHalfWidth = selectedElem.offsetWidth / 2;
+        const selectedElemCenter =
+          selectedElem.offsetLeft + selectedElemHalfWidth;
+        const scrollLeft = selectedElemCenter - boxHalfWidth;
+
+        this.scrollBox.nativeElement.scrollTo({
+          left: scrollLeft,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }
+
+  get eventNumberOnDay(): number {
+    if (!this.scheduleData) {
+      return 0;
+    }
+    return this.scheduleData.data.filter((item) => {
+      const itemDate = this.stringToDate(item.date);
+      return (
+        itemDate.getDate() === this.currentDay.getDate() &&
+        itemDate.getMonth() === this.currentDay.getMonth() &&
+        itemDate.getFullYear() === this.currentDay.getFullYear()
+      );
+    }).length;
+  }
+
+  
 }

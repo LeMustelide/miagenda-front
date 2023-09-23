@@ -94,7 +94,6 @@ export class GroupsService {
     // vérifie pour chaque groups si la propriété "ical" n'est pas vide
     let url = null;
     for (let group in selectedGroups) {
-      console.log(group);
       if (selectedGroups[group] || group === 'default') {
         const adeGroup = this.adeGroups.find((g) => g.parentGroups.includes(group));
         if (adeGroup && adeGroup.ical) {

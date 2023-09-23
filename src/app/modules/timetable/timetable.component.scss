@@ -256,11 +256,11 @@ a {
     background-color: #000000;
     color: white;
     height: 192px;
-    padding: 18px 24px;
+    padding: 18px 0px;
     padding-bottom: 46px;
-    padding-right: 0;
     margin-bottom: -28px;
     .btn-group {
+      padding-left: 18px;
       display: flex;
       flex-direction: row;
       gap: 12px;
@@ -297,6 +297,7 @@ a {
     width: 100%;
     max-height: calc(100vh - 164px);
     padding: 22px 18px;
+    padding-bottom: 0px;
     h1 {
       margin: 0;
       text-transform: capitalize;
@@ -373,6 +374,12 @@ a {
   gap: 24px;
   a {
     color: #4f4f4f;
+  }
+  a:last-of-type {
+    margin-right: 16px;
+  }
+  a:first-of-type {
+    margin-left: 16px;
   }
   .selected {
     color: white;

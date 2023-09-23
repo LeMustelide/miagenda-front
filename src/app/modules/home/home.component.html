@@ -7,7 +7,7 @@
     <p class="hint">
       {{ date | date : "dd MMMM, EEEE" }}
     </p>
-    <p>Prochain cours dans 2h</p>
+    <p>Prochain cours dans {{ timeBeforeNextCourse }}</p>
     <div class="event">
       <div class="event-content">
         <p class="title">{{ nextCourse.title }}</p>
@@ -19,19 +19,21 @@
         <p class="professor">{{ nextCourse.professor }}</p>
       </div>
     </div>
-    <p class="hint">10/12 cours</p>
-    <p class="percent">85%</p>
+    <p class="hint">{{ getNumberOfCoursesPassed() }}/{{ getNumberOfCourses() }} cours</p>
+    <p class="percent">{{ progress }}%</p>
+    <app-progress-bar [progress]="progress"></app-progress-bar>
   </div>
   <div class="group">
     <div *ngFor="let groupType of groups" class="group-list">
       <h3>{{ groupType.name }}</h3>
       <div *ngFor="let group of groupType.groups" class="group-item">
         <mat-checkbox
-        class="example-margin"
-        [(ngModel)]="selectedGroups[group]"
-        (change)="onGroupChange(groupType.name, group)"
-      >{{ group }}</mat-checkbox>
-      <hr />
+          class="example-margin"
+          [(ngModel)]="selectedGroups[group]"
+          (change)="onGroupChange(groupType.name, group)"
+          >{{ group }}</mat-checkbox
+        >
+        <hr />
       </div>
     </div>
   </div>

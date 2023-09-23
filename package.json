@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -18,7 +18,9 @@
     "@angular/material": "^16.2.4",
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
+    "@angular/pwa": "^16.2.3",
     "@angular/router": "^16.2.0",
+    "@angular/service-worker": "^16.2.0",
     "ngx-cookie-service": "^16.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

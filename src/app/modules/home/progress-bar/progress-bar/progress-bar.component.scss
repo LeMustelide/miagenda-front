@@ -1,0 +1,34 @@
+.progress-container {
+  width: 100%;
+  background-color: #f3f3f300;
+}
+
+.progress-bar {
+  position: relative;
+  height: 50px;
+  width: 50%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(to right, #e7c0f5, #ececf6, blue);
+  animation: progress-animation 2s linear infinite;
+  mask-image: linear-gradient(
+    45deg,
+    rgb(0, 0, 0) 10%,
+    transparent 10%,
+    transparent 50%,
+    rgb(0, 0, 0) 50%,
+    rgb(0, 0, 0) 60%,
+    transparent 50%,
+    transparent
+  );
+  mask-size: 12px 12px;
+}
+
+@keyframes progress-animation {
+  0% {
+    mask-position: 0 0;
+  }
+  100% {
+    mask-position: 24px 12px;
+  }
+}
