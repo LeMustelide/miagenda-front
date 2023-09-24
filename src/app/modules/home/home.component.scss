@@ -4,8 +4,24 @@ h2 {
 }
 
 .main-container {
-  .head{
+  .head {
     margin-top: 24px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    .btn-container {
+      height: 80%;
+      display: flex;
+      .btn {
+        background-color: #dddddd;
+        padding: 10px 12px;
+        border-radius: 20px;
+        box-sizing: content-box;
+        i {
+          font-size: 1.2rem;
+        }
+      }
+    }
   }
   display: flex;
   flex-direction: column;

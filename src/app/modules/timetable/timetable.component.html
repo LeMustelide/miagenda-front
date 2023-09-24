@@ -1,7 +1,5 @@
 <div class="main-container">
-  <app-sidebar
-    (onGroupChange)="onGroupChange($event)"
-  > </app-sidebar>
+  <app-sidebar (onGroupChange)="onGroupChange($event)"> </app-sidebar>
   <div class="timetable-container">
     <div class="head">
       <div>
@@ -54,21 +52,35 @@
     </div>
     <div class="mobile-head">
       <div class="btn-group">
-        <a class="back" routerLink="/home" >
+        <a class="back" routerLink="/home">
           <i class="fas fa-arrow-left"></i>
         </a>
-        <select>
-          <option *ngFor="let month of previousSixMonths" [value]="month | date : 'yyyy-MM'">
-            {{ month | date : "MMMM YYYY" }}
-          </option>
-          <option value="{{date}}" selected="select">{{ date | date : "MMMM YYYY" }}</option>
-          <option *ngFor="let month of nextSixMonths" [value]="month | date : 'yyyy-MM'">
-            {{ month | date : "MMMM YYYY" }}
-          </option>
-        </select>
+        <div class="select-wrapper">
+          <select
+            (change)="changeMonth($event)"
+          >
+            <option
+              *ngFor="let month of Months"
+              [value]="month | date : 'yyyy-MM'"
+              [selected]="(month | date : 'yyyy-MM') === (date | date : 'yyyy-MM')"
+            >
+              {{ month | date : "MMMM YYYY" }}
+            </option>
+          </select>
+          <i class="fas fa-chevron-down"></i>
+        </div>
       </div>
       <div #scrollBox class="scroll-day">
-        <a (click)="setCurrentDay(day)" [ngClass]="{ 'selected': day.getFullYear() === currentDay.getFullYear() && day.getMonth() === currentDay.getMonth() && day.getDate() === currentDay.getDate() }" *ngFor="let day of daysOfMonth">
+        <a
+          (click)="setCurrentDay(day)"
+          [ngClass]="{
+            selected:
+              day.getFullYear() === currentDay.getFullYear() &&
+              day.getMonth() === currentDay.getMonth() &&
+              day.getDate() === currentDay.getDate()
+          }"
+          *ngFor="let day of daysOfMonth"
+        >
           <p class="name">
             {{ day | date : "EEE" }}
           </p>
@@ -83,7 +95,7 @@
         <div>UTC +2</div>
       </div>
       <div class="day-name">
-        <div *ngFor="let day of weekDays" >
+        <div *ngFor="let day of weekDays">
           {{ day | date : "EEE" | uppercase }}
           <p class="num">
             {{ day | date : "d" }}
@@ -132,10 +144,8 @@
       </div>
     </div>
     <div class="mobile-timetable">
-      <p class="event-number">
-        {{ eventNumberOnDay }} Cours
-      </p>
-      <h1> {{ currentDay | date : "EEEE" }} </h1>
+      <p class="event-number">{{ eventNumberOnDay }} Cours</p>
+      <h1>{{ currentDay | date : "EEEE" }}</h1>
       <div class="event-timetable">
         <div class="hour">
           <div></div>

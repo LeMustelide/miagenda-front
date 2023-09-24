@@ -1,9 +1,16 @@
 <div class="main-container">
   <div class="head">
-    <h1 class="title">Bonjour</h1>
-    <h2>Toi</h2>
+    <div>
+      <h1 class="title">Good</h1>
+      <h2>morning</h2>
+    </div>
+    <div class="btn-container">
+      <a routerLink="/timetable" class="btn">
+        <i class="far fa-calendar" style="color: black"></i>
+      </a>
+    </div>
   </div>
-  <div routerLink="/timetable" class="card-black">
+  <div class="card-black">
     <p class="hint">
       {{ date | date : "dd MMMM, EEEE" }}
     </p>
@@ -26,14 +33,14 @@
   <div class="group">
     <div *ngFor="let groupType of groups" class="group-list">
       <h3>{{ groupType.name }}</h3>
-      <div *ngFor="let group of groupType.groups" class="group-item">
+      <div *ngFor="let group of groupType.groups; let last = last" class="group-item">
         <mat-checkbox
           class="example-margin"
           [(ngModel)]="selectedGroups[group]"
           (change)="onGroupChange(groupType.name, group)"
           >{{ group }}</mat-checkbox
         >
-        <hr />
+        <hr *ngIf="!last" />
       </div>
     </div>
   </div>

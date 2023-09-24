@@ -107,6 +107,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.date = new Date();
     this.generateWeek();
     this.isToday = true;
+    this.loadSchedule();
   }
 
   loadSchedule(): void {
@@ -131,7 +132,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       });
   }
   
-
   onGroupChange({
     groupType,
     groupName,
@@ -144,7 +144,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
     this.groupsService.onGroupChange(groupType, groupName);
     this.selectedGroups[groupName] = true;
-    this.loadSchedule();
+    this.groupsService.loadAdeGroups().then(() => {
+      this.loadSchedule();
+    });
   }
 
   // Cette fonction retourne l'événement pour un jour et un intervalle de temps donné, si disponible
@@ -218,26 +220,15 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     return positionPercentage + '%';
   }
 
-  get nextSixMonths(): Date[] {
+  get Months(): Date[] {
     const today = new Date();
     const months: Date[] = [];
-    for (let i = 1; i < 7; i++) {
+    for (let i = -6; i < 7; i++) {
       const newDate = new Date(today);
       newDate.setMonth(today.getMonth() + i);
       months.push(newDate);
     }
     return months;
-  }
-
-  get previousSixMonths(): Date[] {
-    const today = new Date();
-    const months: Date[] = [];
-    for (let i = 1; i < 7; i++) {
-      const newDate = new Date(today);
-      newDate.setMonth(today.getMonth() - i);
-      months.push(newDate);
-    }
-    return months.reverse();
   }
 
   // donne la liste des jours du mois sélectionné
@@ -251,8 +242,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     const lastDayOfMonth = new Date(year, month + 1, 0);
     const firstDayOfWeek = firstDayOfMonth.getDay();
     const lastDayOfWeek = lastDayOfMonth.getDay();
-    const lastDayOfPreviousMonth = new Date(year, month, 0).getDate();
-    const lastDayOfNextMonth = new Date(year, month + 1, 0).getDate();
 
     // rajoute les jours du mois précédent si la première semaine du mois ne commence pas un lundi
     if (firstDayOfWeek !== 1) {
@@ -320,5 +309,19 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     }).length;
   }
 
+
+  // fonction de changement de mois en fonction du date
+  changeMonth(event: any): void {
+    const selectedDate = new Date(event.target.value + '-01');
+    this.date = selectedDate;
+    this.weekDays = [];
+    this.generateWeek();
+    this.isToday =
+      this.date.getDate() === new Date().getDate() &&
+      this.date.getMonth() === new Date().getMonth() &&
+      this.date.getFullYear() === new Date().getFullYear();
+    this.loadSchedule();
+    this.centerOnSelected();
+  }
   
 }
