@@ -10,7 +10,6 @@ import { ScheduleData, ScheduleItem } from '../../schedule.model';
 import { CookieService } from 'ngx-cookie-service';
 import { GroupsService } from 'src/app/services/groups/groups.service';
 
-
 @Component({
   selector: 'app-timetable',
   templateUrl: './timetable.component.html',
@@ -50,12 +49,15 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.groupsService.selectedClass = 'M1 MIAGE';
     this.date = new Date();
+    this.loadDefault();
+    console.log(this.selectedGroups);
     this.groupsService.loadAdeGroups().then(() => {
-      //this.groupsService.findIcalUrl(this.selectedGroups);
+      this.groupsService.findIcalUrl(this.selectedGroups);
       this.loadSchedule();
     });
     this.generateWeek();
     this.currentDay = new Date().getDay() === 0 ? this.date : new Date();
+    console.log(this.selectedGroups);
   }
 
   generateWeek(): void {
@@ -131,7 +133,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         };
       });
   }
-  
+
   onGroupChange({
     groupType,
     groupName,
@@ -147,6 +149,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.groupsService.loadAdeGroups().then(() => {
       this.loadSchedule();
     });
+    console.log('this.selectedGroups');
+    console.log(this.selectedGroups);
   }
 
   // Cette fonction retourne l'événement pour un jour et un intervalle de temps donné, si disponible
@@ -309,7 +313,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     }).length;
   }
 
-
   // fonction de changement de mois en fonction du date
   changeMonth(event: any): void {
     const selectedDate = new Date(event.target.value + '-01');
@@ -323,5 +326,19 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.loadSchedule();
     this.centerOnSelected();
   }
-  
+
+  loadDefault() {
+    const groups = this.groupsService.getGroupsTypeForClass();
+    const thirtyDays = 365 * 24 * 60 * 60 * 1000;
+    const expirationDate = new Date(new Date().getTime() + thirtyDays);
+    for (let groupType of groups) {
+      // si aucun groupe n'est sélectionné (présent dans les cookies) par type, alors on sélectionne le groupe par défaut
+      for (let group of groupType.groups) {
+        if (!(group in this.cookieService.getAll())) {
+          this.cookieService.set(groupType.defaultGroup, 'true', expirationDate)
+        }
+      }
+    }
+    // console.log(this);
+  }
 }

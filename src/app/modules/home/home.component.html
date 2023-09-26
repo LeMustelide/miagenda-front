@@ -11,24 +11,26 @@
     </div>
   </div>
   <div class="card-black">
-    <p class="hint">
-      {{ date | date : "dd MMMM, EEEE" }}
-    </p>
-    <p>Prochain cours dans {{ timeBeforeNextCourse }}</p>
-    <div class="event">
-      <div class="event-content">
-        <p class="title">{{ nextCourse.title }}</p>
-        <p class="time">
-          {{ nextCourse.start_time }} - {{ nextCourse.end_time }}
-        </p>
-        <!-- <p class="groups">{{ event.groups }}</p> -->
-        <p class="location">{{ nextCourse.location }}</p>
-        <p class="professor">{{ nextCourse.professor }}</p>
+    <div *ngIf="scheduleData">
+      <p class="hint">
+        {{ date | date : "dd MMMM, EEEE" }}
+      </p>
+      <p>Prochain cours dans {{ timeBeforeNextCourse }}</p>
+      <div class="event">
+        <div class="event-content">
+          <p class="title">{{ nextCourse.title }}</p>
+          <p class="time">
+            {{ nextCourse.start_time }} - {{ nextCourse.end_time }}
+          </p>
+          <!-- <p class="groups">{{ event.groups }}</p> -->
+          <p class="location">{{ nextCourse.location }}</p>
+          <p class="professor">{{ nextCourse.professor }}</p>
+        </div>
       </div>
+      <p class="hint">{{ NumberOfCoursesPassed }}/{{ getNumberOfCourses() }} cours</p>
+      <p class="percent">{{ progress }}%</p>
+      <app-progress-bar [progress]="progress"></app-progress-bar>
     </div>
-    <p class="hint">{{ getNumberOfCoursesPassed() }}/{{ getNumberOfCourses() }} cours</p>
-    <p class="percent">{{ progress }}%</p>
-    <app-progress-bar [progress]="progress"></app-progress-bar>
   </div>
   <div class="group">
     <div *ngFor="let groupType of groups" class="group-list">

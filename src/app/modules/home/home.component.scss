@@ -45,49 +45,52 @@ h2 {
     padding: 14px;
     padding-top: 18px;
     color: white;
-    & > p {
-      color: white;
-      font-size: 1rem;
-      font-weight: 600;
-      margin: 0px;
-    }
-    .hint {
-      color: #a5a5a5 !important;
-      font-size: 0.7rem !important;
-    }
-    .event {
-      margin: 24px 12px;
-      border-radius: 8px;
-      padding: 6px 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      font-size: 0.7rem;
-      height: calc(var(--size) * 100 / 60 * 1%);
-      z-index: 2;
-      transform: translateY(calc(var(--start) * 1%));
-      border: 2px solid #a5a5a5;
-      transition: 0.3s;
-      overflow: hidden;
-      .event-content {
-        .title {
-          font-weight: 500;
-          font-size: 0.9rem;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: wrap;
-        }
-        p {
-          margin: 0;
-          text-overflow: ellipsis;
+    div {
+
+      & > p {
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0px;
+      }
+      .hint {
+        color: #a5a5a5 !important;
+        font-size: 0.7rem !important;
+      }
+      .event {
+        margin: 24px 12px;
+        border-radius: 8px;
+        padding: 6px 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        font-size: 0.7rem;
+        height: calc(var(--size) * 100 / 60 * 1%);
+        z-index: 2;
+        transform: translateY(calc(var(--start) * 1%));
+        border: 2px solid #a5a5a5;
+        transition: 0.3s;
+        overflow: hidden;
+        .event-content {
+          .title {
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: wrap;
+          }
+          p {
+            margin: 0;
+            text-overflow: ellipsis;
+          }
         }
       }
-    }
-    .percent {
-      font-size: 2.8rem;
-      font-weight: 600;
-      margin: 0px;
+      .percent {
+        font-size: 2.8rem;
+        font-weight: 600;
+        margin: 0px;
+      }
     }
   }
 }

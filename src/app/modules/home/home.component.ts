@@ -22,6 +22,7 @@ export class HomeComponent {
   private worker!: Worker;
   progress = 0;
   timeBeforeNextCourse = '00:00';
+  NumberOfCoursesPassed: number = 0;
 
   constructor(
     private groupsService: GroupsService,
@@ -33,7 +34,6 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.groups = this.groupsService.getGroupsTypeForClass();
-
     for (let groupType of this.groups) {
       for (let group of groupType.groups) {
         if (!(group in this.selectedGroups)) {
@@ -43,14 +43,7 @@ export class HomeComponent {
       }
     }
 
-    this.groupsService.loadAdeGroups().then(() => {
-      this.loadSchedule().subscribe((data) => {
-        this.scheduleData = data;
-        this.nextCourse = this.getNextCourse() ?? ({} as ScheduleItem);
-        this.progress = this.getProgress();
-        this.timeBeforeNextCourse = this.getTimeBeforeNextCourse();
-      });
-    });
+    this.update();
   }
 
   loadSchedule(): Observable<ScheduleData> {
@@ -60,6 +53,18 @@ export class HomeComponent {
         formatDate(this.date, 'YYYY-MM-dd', 'fr')
       )
       .pipe(switchMap((data: ScheduleData) => this.filterData(data)));
+  }
+
+  private update() {
+    this.groupsService.loadAdeGroups().then(() => {
+      this.loadSchedule().subscribe((data) => {
+        this.scheduleData = data;
+        this.nextCourse = this.getNextCourse() ?? ({} as ScheduleItem);
+        this.progress = this.getProgress();
+        this.timeBeforeNextCourse = this.getTimeBeforeNextCourse();
+        this.NumberOfCoursesPassed = this.getNumberOfCoursesPassed();
+      });
+    });
   }
 
   private filterData(data: ScheduleData): Observable<ScheduleData> {
@@ -90,14 +95,7 @@ export class HomeComponent {
     this.selectedGroups[groupName] = true;
     this.groupsService.findIcalUrl(this.selectedGroups);
 
-    this.groupsService.loadAdeGroups().then(() => {
-      this.loadSchedule().subscribe((data) => {
-        this.scheduleData = data;
-        this.nextCourse = this.getNextCourse() ?? ({} as ScheduleItem);
-        this.progress = this.getProgress();
-        this.timeBeforeNextCourse = this.getTimeBeforeNextCourse();
-      });
-    });
+    this.update();
   }
 
   // retourne le prochain cours, même si il est dans plusieurs jours
@@ -156,7 +154,6 @@ export class HomeComponent {
 
     const todayEvent = this.scheduleData.data.find((item) => {
       const itemDate = this.stringToDate(item.date);
-
       return (
         itemDate.getDate() === today.getDate() &&
         itemDate.getMonth() === today.getMonth() &&
@@ -178,8 +175,6 @@ export class HomeComponent {
     }
 
     const today = new Date();
-
-    
 
     const dataReversed = this.scheduleData.data.slice();
     dataReversed.reverse();
@@ -216,8 +211,7 @@ export class HomeComponent {
 
     const firstEventTime = firstEvent.start_time.split('h').map(Number);
     const lastEventTime = lastEvent.end_time.split('h').map(Number);
-    const currentTime =
-      (new Date().getHours() - 8) * 60 + new Date().getMinutes();
+    const currentTime = new Date().getHours() * 60 + new Date().getMinutes();
     const firstEventTimeMinutes = firstEventTime[0] * 60 + firstEventTime[1];
     const lastEventTimeMinutes = lastEventTime[0] * 60 + lastEventTime[1];
 
@@ -234,7 +228,7 @@ export class HomeComponent {
 
   // calcul du temps avant le prochain cours en heure et minute ou en jour si le prochain cours est dans plus de 24h
   getTimeBeforeNextCourse(): string {
-    const nextEvent = this.getNextCourse();
+    const nextEvent = this.nextCourse;
 
     if (!nextEvent || !this.scheduleData) {
       return '00:00';
@@ -264,7 +258,9 @@ export class HomeComponent {
 
     // Formatage de la sortie en fonction de la différence en jours
     if (dayDifference > 0) {
-      return `${dayDifference} jour${dayDifference > 1 ? 's' : ''}, ${hours < 10 ? '0' + hours : hours}h et ${minutes < 10 ? '0' + minutes : minutes} min`;
+      return `${dayDifference} jour${dayDifference > 1 ? 's' : ''}, ${
+        hours < 10 ? '0' + hours : hours
+      }h et ${minutes < 10 ? '0' + minutes : minutes} min`;
     } else {
       return `${hours < 10 ? '0' + hours : hours}:${
         minutes < 10 ? '0' + minutes : minutes
@@ -303,9 +299,8 @@ export class HomeComponent {
 
     const todayEvents = this.scheduleData.data.filter((item) => {
       const itemDate = this.stringToDate(item.date);
-      const currentTime =
-        (new Date().getHours() - 8) * 60 + new Date().getMinutes();
-      const itemTime = item.start_time.split('h').map(Number);
+      const currentTime = new Date().getHours() * 60 + new Date().getMinutes();
+      const itemTime = item.end_time.split('h').map(Number);
       const itemTimeMinutes = itemTime[0] * 60 + itemTime[1];
 
       return (

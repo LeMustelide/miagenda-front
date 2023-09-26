@@ -7,4 +7,5 @@ export interface IClass {
 export interface IGroupType {
   name: string;
   groups: string[];
+  defaultGroup: string;
 }
