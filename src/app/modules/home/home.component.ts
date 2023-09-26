@@ -87,14 +87,13 @@ export class HomeComponent {
     });
   }
 
-  onGroupChange(groupType: string, groupName: string) {
+  onGroupChange(groupType: string, groupName: string, value: boolean) {
     this.groupsService.getGroupsOfTypes(groupType).forEach((group) => {
       this.selectedGroups[group] = false;
     });
-    this.groupsService.onGroupChange(groupType, groupName);
-    this.selectedGroups[groupName] = true;
+    this.groupsService.onGroupChange(groupType, groupName, String(value));
+    this.selectedGroups[groupName] = value;
     this.groupsService.findIcalUrl(this.selectedGroups);
-
     this.update();
   }
 

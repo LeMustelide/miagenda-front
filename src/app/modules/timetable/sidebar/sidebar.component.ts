@@ -10,7 +10,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class SidebarComponent {
   selectedGroups: { [key: string]: boolean } = {};
-  @Output() onGroupChange = new EventEmitter<{groupType: string, groupName: string}>();
+  @Output() onGroupChange = new EventEmitter<{groupType: string, groupName: string, value: boolean}>();
   groups: IGroupType[] = [];
 
   constructor(private groupsService: GroupsService, private cookieService: CookieService) { }
@@ -27,12 +27,12 @@ export class SidebarComponent {
     }
   }
 
-  groupChange(groupType: string, groupName: string) {
+  groupChange(groupType: string, groupName: string, value: boolean) {
     this.groupsService.getGroupsOfTypes(groupType).forEach((group) => {
       this.selectedGroups[group] = false;
     });
-    this.onGroupChange.emit({groupType, groupName});
-    this.selectedGroups[groupName] = true;
+    this.onGroupChange.emit({groupType, groupName, value});
+    this.selectedGroups[groupName] = value;
     this.groupsService.findIcalUrl(this.selectedGroups);
   }
 }

@@ -27,7 +27,7 @@
           <div *ngFor="let group of groupType.groups">
             <mat-checkbox
               [(ngModel)]="selectedGroups[group]"
-              (change)="groupChange(groupType.name, group)"
+              (change)="groupChange(groupType.name, group, $event.checked)"
               >{{ group }}</mat-checkbox
             >
           </div>

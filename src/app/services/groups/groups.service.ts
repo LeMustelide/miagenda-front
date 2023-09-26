@@ -34,6 +34,7 @@ export class GroupsService {
   onGroupChange(
     groupType: string,
     checkedGroup: string,
+    value: string, 
     className: string = this.classSelected
   ) {
     const classConfig = this.getGroupsTypeForClass(className);
@@ -45,7 +46,7 @@ export class GroupsService {
         if (group !== checkedGroup) {
           this.cookieService.delete(group);
         } else {
-          this.cookieService.set(group, 'true', this.expirationDate);
+          this.cookieService.set(group, value, this.expirationDate);
           this.cookieService.get(group);
         }
       });

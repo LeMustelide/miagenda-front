@@ -39,7 +39,7 @@
         <mat-checkbox
           class="example-margin"
           [(ngModel)]="selectedGroups[group]"
-          (change)="onGroupChange(groupType.name, group)"
+          (change)="onGroupChange(groupType.name, group, $event.checked)"
           >{{ group }}</mat-checkbox
         >
         <hr *ngIf="!last" />

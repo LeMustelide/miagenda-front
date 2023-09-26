@@ -50,14 +50,12 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.groupsService.selectedClass = 'M1 MIAGE';
     this.date = new Date();
     this.loadDefault();
-    console.log(this.selectedGroups);
     this.groupsService.loadAdeGroups().then(() => {
       this.groupsService.findIcalUrl(this.selectedGroups);
       this.loadSchedule();
     });
     this.generateWeek();
     this.currentDay = new Date().getDay() === 0 ? this.date : new Date();
-    console.log(this.selectedGroups);
   }
 
   generateWeek(): void {
@@ -137,20 +135,20 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   onGroupChange({
     groupType,
     groupName,
+    value
   }: {
     groupType: string;
     groupName: string;
+    value: boolean;
   }) {
     this.groupsService.getGroupsOfTypes(groupType).forEach((group: string) => {
       this.selectedGroups[group] = false;
     });
-    this.groupsService.onGroupChange(groupType, groupName);
-    this.selectedGroups[groupName] = true;
+    this.groupsService.onGroupChange(groupType, groupName, String(value));
+    this.selectedGroups[groupName] = value;
     this.groupsService.loadAdeGroups().then(() => {
       this.loadSchedule();
     });
-    console.log('this.selectedGroups');
-    console.log(this.selectedGroups);
   }
 
   // Cette fonction retourne l'événement pour un jour et un intervalle de temps donné, si disponible
@@ -331,14 +329,17 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     const groups = this.groupsService.getGroupsTypeForClass();
     const thirtyDays = 365 * 24 * 60 * 60 * 1000;
     const expirationDate = new Date(new Date().getTime() + thirtyDays);
+    let useDefault = true;
     for (let groupType of groups) {
       // si aucun groupe n'est sélectionné (présent dans les cookies) par type, alors on sélectionne le groupe par défaut
       for (let group of groupType.groups) {
-        if (!(group in this.cookieService.getAll())) {
-          this.cookieService.set(groupType.defaultGroup, 'true', expirationDate)
+        if (group in this.cookieService.getAll()) {
+          useDefault = false;
         }
       }
+      if(useDefault) {
+        this.cookieService.set(groupType.defaultGroup, 'true', expirationDate)
+      }
     }
-    // console.log(this);
   }
 }
