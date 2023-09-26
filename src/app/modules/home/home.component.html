@@ -27,7 +27,9 @@
           <p class="professor">{{ nextCourse.professor }}</p>
         </div>
       </div>
-      <p class="hint">{{ NumberOfCoursesPassed }}/{{ getNumberOfCourses() }} cours</p>
+      <p class="hint">
+        {{ NumberOfCoursesPassed }}/{{ getNumberOfCourses() }} cours
+      </p>
       <p class="percent">{{ progress }}%</p>
       <app-progress-bar [progress]="progress"></app-progress-bar>
     </div>
@@ -35,15 +37,30 @@
   <div class="group">
     <div *ngFor="let groupType of groups" class="group-list">
       <h3>{{ groupType.name }}</h3>
-      <div *ngFor="let group of groupType.groups; let last = last" class="group-item">
-        <mat-checkbox
-          class="example-margin"
-          [(ngModel)]="selectedGroups[group]"
-          (change)="onGroupChange(groupType.name, group, $event.checked)"
-          >{{ group }}</mat-checkbox
+      <div *ngIf="!groupType.required">
+        <div
+          *ngFor="let group of groupType.groups; let last = last"
+          class="group-item"
         >
-        <hr *ngIf="!last" />
+          <mat-checkbox
+            [(ngModel)]="selectedGroups[group]"
+            (change)="onGroupChange(groupType.name, group, $event.checked)"
+            >{{ group }}</mat-checkbox
+          >
+          <hr *ngIf="!last" />
+        </div>
       </div>
+      <mat-radio-group
+        *ngIf="groupType.required"
+        [value]="getGroupName(groupType.name)"
+        (change)="onGroupChange(groupType.name, $event.value, true)"
+      >
+        <mat-radio-button
+          *ngFor="let group of groupType.groups"
+          value="{{ group }}"
+          >{{ group }}</mat-radio-button
+        >
+      </mat-radio-group>
     </div>
   </div>
 </div>

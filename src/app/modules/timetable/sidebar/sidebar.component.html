@@ -24,13 +24,26 @@
           <mat-expansion-panel-header>
             <mat-panel-title>{{ groupType.name }}</mat-panel-title>
           </mat-expansion-panel-header>
-          <div *ngFor="let group of groupType.groups">
-            <mat-checkbox
-              [(ngModel)]="selectedGroups[group]"
-              (change)="groupChange(groupType.name, group, $event.checked)"
-              >{{ group }}</mat-checkbox
-            >
+          <div *ngIf="!groupType.required">
+            <div *ngFor="let group of groupType.groups">
+              <mat-checkbox
+                [(ngModel)]="selectedGroups[group]"
+                (change)="groupChange(groupType.name, group, $event.checked)"
+                >{{ group }}</mat-checkbox
+              >
+            </div>
           </div>
+          <mat-radio-group
+            *ngIf="groupType.required"
+            [value]="getGroupName(groupType.name)"
+            (change)="groupChange(groupType.name, $event.value, true)"
+          >
+            <mat-radio-button
+              *ngFor="let group of groupType.groups"
+              value="{{ group }}"
+              >{{ group }}</mat-radio-button
+            >
+          </mat-radio-group>
         </mat-expansion-panel>
       </mat-accordion>
       <hr />

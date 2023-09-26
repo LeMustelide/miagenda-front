@@ -8,4 +8,5 @@ export interface IGroupType {
   name: string;
   groups: string[];
   defaultGroup: string;
+  required?: boolean;
 }

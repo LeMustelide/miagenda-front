@@ -3,6 +3,7 @@ import { GroupsService } from 'src/app/services/groups/groups.service';
 import { IGroupType } from '../../../shared/interfaces/class.interface';
 import { CookieService } from 'ngx-cookie-service';
 
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -34,5 +35,18 @@ export class SidebarComponent {
     this.onGroupChange.emit({groupType, groupName, value});
     this.selectedGroups[groupName] = value;
     this.groupsService.findIcalUrl(this.selectedGroups);
+  }
+
+  // retourne le nom du groupe en fonction de la valeur actuelle pour un type de groupe donné
+  getGroupName(groupType: string): string {
+    const groups = this.groupsService.getGroupsOfTypes(groupType);
+
+    for (let group of groups) {
+      if (this.selectedGroups[group] === true) {
+        return group;
+      }
+    }
+
+    return '';
   }
 }

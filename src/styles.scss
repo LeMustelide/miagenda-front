@@ -27,7 +27,7 @@ mat-expansion-panel {
   color: #6c7589;
 }
 
-.mat-expansion-panel-body {
+.mat-expansion-panel-body > div {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -43,4 +43,9 @@ mat-expansion-panel {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+mat-radio-group {
+  display: flex;
+  flex-direction: column;
 }

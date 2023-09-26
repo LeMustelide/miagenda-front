@@ -342,4 +342,27 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
+  // récupération du type de groupe à partir de la liste des groupes ade
+  // param : string[] : liste des groupes ade
+  // return : string : type de groupe
+  getGroupType(groups: string[]): string {
+    const groupsType = this.groupsService.getGroupsTypeForClass();
+    const adeGroups = this.groupsService.getAdeGroups();
+    let groupType = '';
+    for (let group of groups) {
+      for(let adeGroup of adeGroups) {
+        if(adeGroup.adeNames.includes(group)) {
+          for(let groupType of groupsType) {
+            if(groupType.groups.includes(adeGroup.parentGroups[0])) {
+              return groupType.name;
+            }
+          }
+        }
+      }
+    }
+    return groupType;
+  }
+  
+  
 }

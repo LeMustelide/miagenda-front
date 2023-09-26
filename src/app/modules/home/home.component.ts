@@ -87,8 +87,10 @@ export class HomeComponent {
     });
   }
 
+  
   onGroupChange(groupType: string, groupName: string, value: boolean) {
-    this.groupsService.getGroupsOfTypes(groupType).forEach((group) => {
+    const groups = this.groupsService.getGroupsOfTypes(groupType);
+    groups.forEach((group) => {
       this.selectedGroups[group] = false;
     });
     this.groupsService.onGroupChange(groupType, groupName, String(value));
@@ -311,5 +313,18 @@ export class HomeComponent {
     });
 
     return todayEvents.length;
+  }
+
+  // retourne le nom du groupe en fonction de la valeur actuelle pour un type de groupe donné
+  getGroupName(groupType: string): string {
+    const groups = this.groupsService.getGroupsOfTypes(groupType);
+
+    for (let group of groups) {
+      if (this.selectedGroups[group] === true) {
+        return group;
+      }
+    }
+
+    return '';
   }
 }

@@ -132,7 +132,7 @@
                   <p class="time">
                     {{ event.start_time }} - {{ event.end_time }}
                   </p>
-                  <p class="groups">{{ event.groups }}</p>
+                  <p class="groups">{{ getGroupType(event.groups) }}</p>
                   <p class="location">{{ event.location }}</p>
                   <p class="professor">{{ event.professor }}</p>
                 </div>
@@ -169,7 +169,7 @@
                     <p class="time">
                       {{ event.start_time }} - {{ event.end_time }}
                     </p>
-                    <p class="groups">{{ event.groups }}</p>
+                    <p class="groups">{{ getGroupType(event.groups) }}</p>
                     <p class="location">{{ event.location }}</p>
                     <p class="professor">{{ event.professor }}</p>
                   </div>
