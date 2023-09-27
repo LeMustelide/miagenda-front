@@ -256,11 +256,11 @@ a {
     background-color: #000000;
     color: white;
     height: 192px;
-    padding: 18px 24px;
+    padding: 18px 0px;
     padding-bottom: 46px;
-    padding-right: 0;
     margin-bottom: -28px;
     .btn-group {
+      padding-left: 18px;
       display: flex;
       flex-direction: row;
       gap: 12px;
@@ -274,15 +274,30 @@ a {
         border-radius: 100%;
         padding: 12px;
       }
+      .select-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        
+      }
+      .select-wrapper:after {
+        position: absolute;
+        top: 25%;
+        right: 0px;
+        pointer-events: none;
+        transform: translateY(-50%);
+      }
       select {
         border: none;
         background-color: #00000000;
         color: white;
         font-family: "Helvetica Neue", sans-serif;
         font-size: 1.2rem;
+        padding-right: 6px;
       }
       option {
         font-family: "Helvetica Neue", sans-serif;
+        background-color: #00000000;
       }
     }
   }
@@ -297,6 +312,7 @@ a {
     width: 100%;
     max-height: calc(100vh - 164px);
     padding: 22px 18px;
+    padding-bottom: 0px;
     h1 {
       margin: 0;
       text-transform: capitalize;
@@ -306,19 +322,18 @@ a {
     }
     .event-timetable {
       display: grid;
-      grid-template-areas:
-        "time-mob content-mob";
+      grid-template-areas: "time-mob content-mob";
       grid-template-columns: 50px;
       overflow: auto;
       height: 100%;
-      
+
       .hour {
         display: grid;
         grid-area: time-mob;
         height: 100%;
         grid-template-columns: 1fr;
         grid-template-rows: 0.5fr repeat(12, 1fr);
-        
+
         & > div {
           transform: translateY(-10px);
         }
@@ -359,6 +374,11 @@ a {
               margin: 0;
               text-overflow: ellipsis;
             }
+            .groups {
+              position: absolute;
+              top: 12px;
+              right: 12px;
+            }
           }
         }
       }
@@ -373,6 +393,12 @@ a {
   gap: 24px;
   a {
     color: #4f4f4f;
+  }
+  a:last-of-type {
+    margin-right: 16px;
+  }
+  a:first-of-type {
+    margin-left: 16px;
   }
   .selected {
     color: white;

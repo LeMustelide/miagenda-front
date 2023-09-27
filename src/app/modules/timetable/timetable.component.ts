@@ -1,18 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  AfterViewInit,
+  ViewChild,
+} from '@angular/core';
 import { TimetableService } from 'src/app/services/timetable.service';
 import { ScheduleData, ScheduleItem } from '../../schedule.model';
 import { CookieService } from 'ngx-cookie-service';
+import { GroupsService } from 'src/app/services/groups/groups.service';
 
 @Component({
   selector: 'app-timetable',
   templateUrl: './timetable.component.html',
   styleUrls: ['./timetable.component.scss'],
 })
-export class TimetableComponent implements OnInit {
-  selectedGroupTD: string = '';
-  selectedGroupTP: string = '';
-  alternant: boolean = true;
+export class TimetableComponent implements OnInit, AfterViewInit {
+  selectedGroups: { [key: string]: boolean } = {};
   public scheduleData: ScheduleData | null = null;
+  @ViewChild('scrollBox') scrollBox!: ElementRef;
 
   public timeIntervals: string[] = [
     '08h00 - 09h00',
@@ -34,22 +40,28 @@ export class TimetableComponent implements OnInit {
   isToday: boolean = true;
   currentDay!: Date;
 
-  constructor(private timetableService: TimetableService, private cookieService: CookieService) {}
+  constructor(
+    private timetableService: TimetableService,
+    private cookieService: CookieService,
+    private groupsService: GroupsService
+  ) {}
 
   ngOnInit(): void {
+    this.groupsService.selectedClass = 'M1 MIAGE';
     this.date = new Date();
-    this.loadSchedule();
+    this.loadDefault();
+    this.groupsService.loadAdeGroups().then(() => {
+      this.groupsService.findIcalUrl(this.selectedGroups);
+      this.loadSchedule();
+    });
     this.generateWeek();
-    this.selectedGroupTD = this.cookieService.get('tdGroup');
-    this.selectedGroupTP = this.cookieService.get('tpGroup');
-    this.alternant = this.cookieService.get('alternant') === 'true';
     this.currentDay = new Date().getDay() === 0 ? this.date : new Date();
   }
 
   generateWeek(): void {
     let currentDayOfWeek = this.date.getDay();
-    if(currentDayOfWeek === 0) {
-      this.date.setDate(this.date.getDate() + 1);
+    if (currentDayOfWeek === 0) {
+      this.date.setDate(this.date.getDate());
     }
     currentDayOfWeek = this.date.getDay();
     const daysToMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1; // considérant que Sunday est 0 et Monday est 1
@@ -62,16 +74,32 @@ export class TimetableComponent implements OnInit {
 
   previousWeek(): void {
     this.weekDays = [];
-    this.date = new Date(this.date.getFullYear(), this.date.getMonth(),this.date.getDate() - 7);
+    this.date = new Date(
+      this.date.getFullYear(),
+      this.date.getMonth(),
+      this.date.getDate() - 7
+    );
     this.generateWeek();
-    this.isToday = this.date.getDate() === new Date().getDate() && this.date.getMonth() === new Date().getMonth() && this.date.getFullYear() === new Date().getFullYear();
+    this.isToday =
+      this.date.getDate() === new Date().getDate() &&
+      this.date.getMonth() === new Date().getMonth() &&
+      this.date.getFullYear() === new Date().getFullYear();
+    this.loadSchedule();
   }
 
   nextWeek(): void {
     this.weekDays = [];
-    this.date = new Date(this.date.getFullYear(), this.date.getMonth(),this.date.getDate() + 7);
+    this.date = new Date(
+      this.date.getFullYear(),
+      this.date.getMonth(),
+      this.date.getDate() + 7
+    );
     this.generateWeek();
-    this.isToday = this.date.getDate() === new Date().getDate() && this.date.getMonth() === new Date().getMonth() && this.date.getFullYear() === new Date().getFullYear();
+    this.isToday =
+      this.date.getDate() === new Date().getDate() &&
+      this.date.getMonth() === new Date().getMonth() &&
+      this.date.getFullYear() === new Date().getFullYear();
+    this.loadSchedule();
   }
 
   today(): void {
@@ -79,87 +107,48 @@ export class TimetableComponent implements OnInit {
     this.date = new Date();
     this.generateWeek();
     this.isToday = true;
+    this.loadSchedule();
   }
 
   loadSchedule(): void {
-    this.timetableService.getSchedule(this.alternant ? 'https://aderead2022.univ-orleans.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?data=83909bcb789af69dbb59d201976f55300d3b4c68a7820e99c53ca46537bc18bd982bf381b1007d5c58e581d9e50ed9f0150773d38134ae18c98c0a9c1622637d48c2240b7941c7dd7e7dea10fc53247e,1' : 'https://aderead2022.univ-orleans.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?data=cc7ee745de3d21643a129a41f75db5740d3b4c68a7820e99c53ca46537bc18bd982bf381b1007d5c58e581d9e50ed9f0150773d38134ae18c98c0a9c1622637d48c2240b7941c7dd7e7dea10fc53247e,1').subscribe((data: ScheduleData) => {
-      this.scheduleData = {
-        ...data,
-        data: data.data.filter(
-          (item) => {
-            return !item.groups ||
-            ( this.alternant && item.groups.includes('Gr  ALT') ) ||
-            ( !this.alternant && item.groups.includes('Gr  FI') ) ||
-            ( item.groups.includes('M1 MIAGE') && item.groups.length == 1 ) ||
-            (this.selectedGroupTD == 'TD1' &&
-              (
-                ( this.alternant && item.groups.includes('Gr TD1ALT') )
-                ||
-                ( !this.alternant && item.groups.includes('Gr  TD1FI'))
-              )
-            )
-            ||
-            (this.selectedGroupTD == 'TD2' &&
-              ( 
-                ( this.alternant && item.groups.includes('Gr TD2ALT') )
-                ||
-                ( !this.alternant && item.groups.includes('Gr  TD2FI') )
-              )
-            ) ||
-            (this.selectedGroupTP == 'TP1' &&
-              (
-                ( this.alternant && item.groups.includes('Gr TP 1ALT'))
-                ||
-                ( !this.alternant && item.groups.includes('Gr  TP1FI'))
-                ||
-                ( this.alternant && item.groups.includes('ANG1ALT'))
-                ||
-                ( !this.alternant && item.groups.includes('ANG1FI'))
-              )
-            )
-            ||
-            (this.selectedGroupTP == 'TP2' &&
-              (
-                (this.alternant && item.groups.includes('Gr TP 2ALT'))
-                ||
-                ( !this.alternant && item.groups.includes('Gr  TP2FI'))
-                ||
-                ( this.alternant && item.groups.includes('ANG2ALT') )
-                ||
-                ( !this.alternant && item.groups.includes('ANG2FI'))
-              )
-            )
-            ||
-            (this.selectedGroupTP == 'TP3' &&
-              (
-                ( this.alternant && item.groups.includes('Gr TP 3ALT') )
-                ||
-                ( !this.alternant && item.groups.includes('Gr TP3FI') )
-                ||
-                ( this.alternant && item.groups.includes('ANG3ALT') )
-                ||
-                ( !this.alternant && item.groups.includes('ANG3FI') )
-              )
-            )
-          }
-        ),
-      };
+    this.timetableService
+      .getSchedule(this.cookieService.get('icalUrl'))
+      .subscribe((data: ScheduleData) => {
+        const worker = new Worker('./assets/timetable-schedule-worker.js', {
+          type: 'module',
+        });
+        worker.postMessage({
+          data: data.data,
+          date: this.date,
+          selectedGroups: this.groupsService.getSelectedAdeGroups(),
+        });
+        worker.onmessage = (event) => {
+          this.scheduleData = {
+            ...data,
+            data: event.data,
+          };
+          worker.terminate();
+        };
+      });
+  }
+
+  onGroupChange({
+    groupType,
+    groupName,
+    value
+  }: {
+    groupType: string;
+    groupName: string;
+    value: boolean;
+  }) {
+    this.groupsService.getGroupsOfTypes(groupType).forEach((group: string) => {
+      this.selectedGroups[group] = false;
     });
-  }
-
-  handleGroupTDChange(groupTD: string) {
-    this.selectedGroupTD = groupTD;
-    this.loadSchedule(); // Rechargez l'emploi du temps lorsque le groupe change
-  }
-
-  handleGroupTPChange(groupTP: string) {
-    this.selectedGroupTP = groupTP;
-    this.loadSchedule(); // Rechargez l'emploi du temps lorsque le groupe change
-  }
-
-  handleAlternantChange(alternant: boolean) {
-    this.alternant = alternant;
-    this.loadSchedule(); // Rechargez l'emploi du temps lorsque le groupe change
+    this.groupsService.onGroupChange(groupType, groupName, String(value));
+    this.selectedGroups[groupName] = value;
+    this.groupsService.loadAdeGroups().then(() => {
+      this.loadSchedule();
+    });
   }
 
   // Cette fonction retourne l'événement pour un jour et un intervalle de temps donné, si disponible
@@ -187,12 +176,15 @@ export class TimetableComponent implements OnInit {
 
   stringToDate(dateString: string): Date {
     const [day, month, year] = dateString.split('/').map(Number);
-    return new Date(year, month - 1, day); // les mois sont indexés à partir de 0 en JS
+    return new Date(year, month - 1, day);
   }
 
   setCurrentDay(selectedDay: Date): void {
-    this.currentDay = new Date(selectedDay); // créez une nouvelle instance pour éviter toute référence
-  }  
+    this.currentDay = new Date(selectedDay);
+    setTimeout(() => {
+      this.centerOnSelected();
+    }, 0);
+  }
 
   // Cette fonction retourne la durée d'un événement en minutes
   getEventDuration(event: ScheduleItem): number {
@@ -223,13 +215,154 @@ export class TimetableComponent implements OnInit {
     const minutePosition = this.date.getMinutes() * (1 / 60); // fraction de 1/2fr pour chaque minute
 
     const totalPosition = minutePosition + hourPosition;
-    console.log(totalPosition);
 
-    // Convertissons le total en pourcentage par rapport à la grille entière.
     const percentagePerFr = 100 / 12.5;
     let positionPercentage = totalPosition * percentagePerFr;
-    console.log(percentagePerFr+ ' !');
 
     return positionPercentage + '%';
   }
+
+  get Months(): Date[] {
+    const today = new Date();
+    const months: Date[] = [];
+    for (let i = -6; i < 7; i++) {
+      const newDate = new Date(today);
+      newDate.setMonth(today.getMonth() + i);
+      months.push(newDate);
+    }
+    return months;
+  }
+
+  // donne la liste des jours du mois sélectionné
+  // rajoute aussi les jours du mois précendent si la première semaine du mois ne commence pas un lundi
+  // et les jours du mois suivant si la dernière semaine du mois ne fini pas un dimanche
+  get daysOfMonth(): Date[] {
+    const days: Date[] = [];
+    const month = this.date.getMonth();
+    const year = this.date.getFullYear();
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    const firstDayOfWeek = firstDayOfMonth.getDay();
+    const lastDayOfWeek = lastDayOfMonth.getDay();
+
+    // rajoute les jours du mois précédent si la première semaine du mois ne commence pas un lundi
+    if (firstDayOfWeek !== 1) {
+      for (let i = firstDayOfWeek - 1; i > 0; i--) {
+        const newDate = new Date(firstDayOfMonth);
+        newDate.setDate(firstDayOfMonth.getDate() - i);
+        days.push(newDate);
+      }
+    }
+
+    // rajoute les jours du mois sélectionné
+    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+      const newDate = new Date(firstDayOfMonth);
+      newDate.setDate(i);
+      days.push(newDate);
+    }
+
+    // rajoute les jours du mois suivant si la dernière semaine du mois ne fini pas un dimanche
+    if (lastDayOfWeek !== 0) {
+      for (let i = 1; i <= 7 - lastDayOfWeek; i++) {
+        const newDate = new Date(lastDayOfMonth);
+        newDate.setDate(lastDayOfMonth.getDate() + i);
+        days.push(newDate);
+      }
+    }
+
+    return days;
+  }
+
+  ngAfterViewInit(): void {
+    this.centerOnSelected();
+  }
+
+  centerOnSelected() {
+    if (this.scrollBox) {
+      const selectedElem =
+        this.scrollBox.nativeElement.querySelector('.selected');
+      if (selectedElem) {
+        const boxWidth = this.scrollBox.nativeElement.offsetWidth;
+        const boxHalfWidth = boxWidth / 2;
+        const selectedElemHalfWidth = selectedElem.offsetWidth / 2;
+        const selectedElemCenter =
+          selectedElem.offsetLeft + selectedElemHalfWidth;
+        const scrollLeft = selectedElemCenter - boxHalfWidth;
+
+        this.scrollBox.nativeElement.scrollTo({
+          left: scrollLeft,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }
+
+  get eventNumberOnDay(): number {
+    if (!this.scheduleData) {
+      return 0;
+    }
+    return this.scheduleData.data.filter((item) => {
+      const itemDate = this.stringToDate(item.date);
+      return (
+        itemDate.getDate() === this.currentDay.getDate() &&
+        itemDate.getMonth() === this.currentDay.getMonth() &&
+        itemDate.getFullYear() === this.currentDay.getFullYear()
+      );
+    }).length;
+  }
+
+  // fonction de changement de mois en fonction du date
+  changeMonth(event: any): void {
+    const selectedDate = new Date(event.target.value + '-01');
+    this.date = selectedDate;
+    this.weekDays = [];
+    this.generateWeek();
+    this.isToday =
+      this.date.getDate() === new Date().getDate() &&
+      this.date.getMonth() === new Date().getMonth() &&
+      this.date.getFullYear() === new Date().getFullYear();
+    this.loadSchedule();
+    this.centerOnSelected();
+  }
+
+  loadDefault() {
+    const groups = this.groupsService.getGroupsTypeForClass();
+    const thirtyDays = 365 * 24 * 60 * 60 * 1000;
+    const expirationDate = new Date(new Date().getTime() + thirtyDays);
+    let useDefault = true;
+    for (let groupType of groups) {
+      // si aucun groupe n'est sélectionné (présent dans les cookies) par type, alors on sélectionne le groupe par défaut
+      for (let group of groupType.groups) {
+        if (group in this.cookieService.getAll()) {
+          useDefault = false;
+        }
+      }
+      if(useDefault) {
+        this.cookieService.set(groupType.defaultGroup, 'true', expirationDate)
+      }
+    }
+  }
+
+  // récupération du type de groupe à partir de la liste des groupes ade
+  // param : string[] : liste des groupes ade
+  // return : string : type de groupe
+  getGroupType(groups: string[]): string {
+    const groupsType = this.groupsService.getGroupsTypeForClass();
+    const adeGroups = this.groupsService.getAdeGroups();
+    let groupType = '';
+    for (let group of groups) {
+      for(let adeGroup of adeGroups) {
+        if(adeGroup.adeNames.includes(group)) {
+          for(let groupType of groupsType) {
+            if(groupType.groups.includes(adeGroup.parentGroups[0])) {
+              return groupType.name;
+            }
+          }
+        }
+      }
+    }
+    return groupType;
+  }
+  
+  
 }

@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { GroupsService } from 'src/app/services/groups/groups.service';
+import { IGroupType } from '../../../shared/interfaces/class.interface';
+import { CookieService } from 'ngx-cookie-service';
 
-type TDGroupKeys = 'TD1' | 'TD2';
-type TPGroupKeys = 'TP1' | 'TP2' | 'TP3';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,46 +10,43 @@ type TPGroupKeys = 'TP1' | 'TP2' | 'TP3';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-  tdGroup = {
-    TD1: false,
-    TD2: false,
-  };
+  selectedGroups: { [key: string]: boolean } = {};
+  @Output() onGroupChange = new EventEmitter<{groupType: string, groupName: string, value: boolean}>();
+  groups: IGroupType[] = [];
 
-  tpGroup = {
-    TP1: false,
-    TP2: false,
-    TP3: false,
-  };
+  constructor(private groupsService: GroupsService, private cookieService: CookieService) { }
 
-  alternant: boolean = true;
-  @Output() tdChange = new EventEmitter<string>();
-  @Output() tpChanged = new EventEmitter<string>();
-  @Output() alternantChanged = new EventEmitter<boolean>();
-
-  onTdChange(checkedGroup: TDGroupKeys) {
-    Object.keys(this.tdGroup).forEach((group) => {
-      if (group !== checkedGroup) {
-        this.tdGroup[group as TDGroupKeys] = false;
+  ngOnInit(): void {
+    this.groups = this.groupsService.getGroupsTypeForClass();
+  
+    for (let groupType of this.groups) {
+      for (let group of groupType.groups) {
+        if (!(group in this.selectedGroups)) {
+          this.selectedGroups[group] = this.cookieService.get(group) === "true" || false;
+        }
       }
-    });
-    this.tdChange.emit(checkedGroup);
+    }
   }
 
-  onTpChange(checkedGroup: TPGroupKeys) {
-    Object.keys(this.tpGroup).forEach((group) => {
-      if (group !== checkedGroup) {
-        this.tpGroup[group as TPGroupKeys] = false;
+  groupChange(groupType: string, groupName: string, value: boolean) {
+    this.groupsService.getGroupsOfTypes(groupType).forEach((group) => {
+      this.selectedGroups[group] = false;
+    });
+    this.onGroupChange.emit({groupType, groupName, value});
+    this.selectedGroups[groupName] = value;
+    this.groupsService.findIcalUrl(this.selectedGroups);
+  }
+
+  // retourne le nom du groupe en fonction de la valeur actuelle pour un type de groupe donné
+  getGroupName(groupType: string): string {
+    const groups = this.groupsService.getGroupsOfTypes(groupType);
+
+    for (let group of groups) {
+      if (this.selectedGroups[group] === true) {
+        return group;
       }
-    });
-    this.tpChanged.emit(checkedGroup);
-  }
+    }
 
-  setAlternant(isInitiale: boolean) {
-    this.alternant = isInitiale;
-    this.onAlternantSelect();
-  }
-
-  onAlternantSelect() {
-    this.alternantChanged.emit(this.alternant);
+    return '';
   }
 }

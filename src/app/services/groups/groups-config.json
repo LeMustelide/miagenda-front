@@ -1,0 +1,16 @@
+[
+  {
+    "name": "M1 MIAGE",
+    "groupTypes": [
+      { "name": "TD", "groups": ["TD1", "TD2"], "defaultGroup": "TD1" },
+      { "name": "TP", "groups": ["TP1", "TP2", "TP3"], "defaultGroup": "TP1" },
+      {
+        "name": "Formations",
+        "groups": ["Alternant", "Formation initiale"],
+        "defaultGroup": "Alternant",
+        "required": true
+      }
+    ],
+    "adeConfig": "ade-groups-m1miage.json"
+  }
+]

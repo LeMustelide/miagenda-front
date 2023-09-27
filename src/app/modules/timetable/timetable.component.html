@@ -1,9 +1,5 @@
 <div class="main-container">
-  <app-sidebar
-    (tdChange)="handleGroupTDChange($event)"
-    (tpChanged)="handleGroupTPChange($event)"
-    (alternantChanged)="handleAlternantChange($event)"
-  > </app-sidebar>
+  <app-sidebar (onGroupChange)="onGroupChange($event)"> </app-sidebar>
   <div class="timetable-container">
     <div class="head">
       <div>
@@ -56,15 +52,35 @@
     </div>
     <div class="mobile-head">
       <div class="btn-group">
-        <a class="back" routerLink="/home" >
+        <a class="back" routerLink="/home">
           <i class="fas fa-arrow-left"></i>
         </a>
-        <select>
-          <option value="09-2023" selected="select">Septembre 2023</option>
-        </select>
+        <div class="select-wrapper">
+          <select
+            (change)="changeMonth($event)"
+          >
+            <option
+              *ngFor="let month of Months"
+              [value]="month | date : 'yyyy-MM'"
+              [selected]="(month | date : 'yyyy-MM') === (date | date : 'yyyy-MM')"
+            >
+              {{ month | date : "MMMM YYYY" }}
+            </option>
+          </select>
+          <i class="fas fa-chevron-down"></i>
+        </div>
       </div>
-      <div class="scroll-day">
-        <a (click)="setCurrentDay(day)" [ngClass]="{ 'selected': day.getFullYear() === currentDay.getFullYear() && day.getMonth() === currentDay.getMonth() && day.getDate() === currentDay.getDate() }" *ngFor="let day of weekDays">
+      <div #scrollBox class="scroll-day">
+        <a
+          (click)="setCurrentDay(day)"
+          [ngClass]="{
+            selected:
+              day.getFullYear() === currentDay.getFullYear() &&
+              day.getMonth() === currentDay.getMonth() &&
+              day.getDate() === currentDay.getDate()
+          }"
+          *ngFor="let day of daysOfMonth"
+        >
           <p class="name">
             {{ day | date : "EEE" }}
           </p>
@@ -79,7 +95,7 @@
         <div>UTC +2</div>
       </div>
       <div class="day-name">
-        <div *ngFor="let day of weekDays" >
+        <div *ngFor="let day of weekDays">
           {{ day | date : "EEE" | uppercase }}
           <p class="num">
             {{ day | date : "d" }}
@@ -116,7 +132,7 @@
                   <p class="time">
                     {{ event.start_time }} - {{ event.end_time }}
                   </p>
-                  <!-- <p class="groups">{{ event.groups }}</p> -->
+                  <p class="groups">{{ getGroupType(event.groups) }}</p>
                   <p class="location">{{ event.location }}</p>
                   <p class="professor">{{ event.professor }}</p>
                 </div>
@@ -128,10 +144,8 @@
       </div>
     </div>
     <div class="mobile-timetable">
-      <p class="event-number">
-        4 Cours
-      </p>
-      <h1> {{ currentDay | date : "EEEE" }} </h1>
+      <p class="event-number">{{ eventNumberOnDay }} Cours</p>
+      <h1>{{ currentDay | date : "EEEE" }}</h1>
       <div class="event-timetable">
         <div class="hour">
           <div></div>
@@ -155,7 +169,7 @@
                     <p class="time">
                       {{ event.start_time }} - {{ event.end_time }}
                     </p>
-                    <!-- <p class="groups">{{ event.groups }}</p> -->
+                    <p class="groups">{{ getGroupType(event.groups) }}</p>
                     <p class="location">{{ event.location }}</p>
                     <p class="professor">{{ event.professor }}</p>
                   </div>
