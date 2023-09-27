@@ -5,11 +5,11 @@
 
 .progress-bar {
   position: relative;
-  height: 50px;
+  height: 40px;
   width: 50%;
   border-radius: 16px;
   overflow: hidden;
-  background: linear-gradient(to right, #e7c0f5, #ececf6, blue);
+  background: linear-gradient(to right,#000000,#383838,#e4ebff);
   animation: progress-animation 2s linear infinite;
   mask-image: linear-gradient(
     45deg,
@@ -21,7 +21,7 @@
     transparent 50%,
     transparent
   );
-  mask-size: 12px 12px;
+  mask-size: 20px 20px;
 }
 
 @keyframes progress-animation {
