@@ -1,7 +1,8 @@
 {
   "name": "MIAGENDA",
+  "lang": "fr",
   "short_name": "MIAGENDA",
-  "theme_color": "#1976d2",
+  "theme_color": "#000000",
   "background_color": "#000000",
   "display": "standalone",
   "scope": "./",
