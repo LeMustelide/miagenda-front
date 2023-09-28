@@ -9,7 +9,7 @@
   width: 50%;
   border-radius: 16px;
   overflow: hidden;
-  background: linear-gradient(to right,#000000,#383838,#e4ebff);
+  background: linear-gradient(to right,#101010, #b0b0b0 , #ececf6);
   animation: progress-animation 2s linear infinite;
   mask-image: linear-gradient(
     45deg,
@@ -21,7 +21,7 @@
     transparent 50%,
     transparent
   );
-  mask-size: 20px 20px;
+  mask-size: 12px 12px;
 }
 
 @keyframes progress-animation {
