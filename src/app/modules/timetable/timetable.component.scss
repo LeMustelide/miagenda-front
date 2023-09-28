@@ -172,7 +172,6 @@ a {
 
     .event {
       border-radius: 8px;
-      padding: 6px 12px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -185,8 +184,17 @@ a {
       background-color: #def5e6;
       transition: 0.3s;
       overflow: hidden;
+      transition-delay: 300ms;
+      transition-property: overflow;
       .event-content {
+        padding: 6px 12px;
+        border-radius: 8px;
+        width: 100%;
         position: absolute;
+        max-height: 100%;
+        transition: max-height 1s ease-out;
+        transition: background-color 0.3s;
+        overflow: hidden;
         .title {
           font-weight: 500;
           font-size: 0.9rem;
@@ -203,6 +211,14 @@ a {
 
     .event:hover {
       background-color: #c5f0d9;
+      overflow: visible;
+      z-index: 10;
+      .event-content {
+        max-height: 300px;
+        background-color: #c5f0d9;
+        transition: background-color 0.3s;
+        transition: max-height 1s ease-out;
+      }
     }
   }
   .current-line {
@@ -349,7 +365,6 @@ a {
         }
         .event {
           border-radius: 18px;
-          padding: 12px 12px;
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
@@ -363,6 +378,7 @@ a {
           transition: 0.3s;
           overflow: hidden;
           .event-content {
+            padding: 12px 12px;
             .title {
               font-weight: 500;
               font-size: 0.9rem;
