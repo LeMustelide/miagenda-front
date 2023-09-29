@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { GroupsService } from 'src/app/services/groups/groups.service';
 import { IGroupType } from '../../../shared/interfaces/class.interface';
 import { CookieService } from 'ngx-cookie-service';
+import packageJson  from '../../../../../package.json';
 
 
 @Component({
@@ -13,6 +14,7 @@ export class SidebarComponent {
   selectedGroups: { [key: string]: boolean } = {};
   @Output() onGroupChange = new EventEmitter<{groupType: string, groupName: string, value: boolean}>();
   groups: IGroupType[] = [];
+  public version: string = packageJson.version;
 
   constructor(private groupsService: GroupsService, private cookieService: CookieService) { }
 
