@@ -95,7 +95,7 @@
         <div>UTC +2</div>
       </div>
       <div class="day-name">
-        <div *ngFor="let day of weekDays">
+        <div *ngFor="let day of weekDays" [ngClass]="{'current-day': (day | date : 'd') === (currentDay | date : 'd') && (day | date : 'M') === (currentDay | date : 'M')}" >
           {{ day | date : "EEE" | uppercase }}
           <p class="num">
             {{ day | date : "d" }}

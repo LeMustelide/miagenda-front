@@ -112,6 +112,9 @@ a {
     text-align: center;
     display: flex;
     border-left: 1px solid #eaeaea;
+    .current-day {
+      background-color: #e4e4e4;
+    }
     div {
       display: flex;
       justify-content: center;

@@ -315,6 +315,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   changeMonth(event: any): void {
     const selectedDate = new Date(event.target.value + '-01');
     this.date = selectedDate;
+    this.setCurrentDay(selectedDate);
     this.weekDays = [];
     this.generateWeek();
     this.isToday =
@@ -322,7 +323,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       this.date.getMonth() === new Date().getMonth() &&
       this.date.getFullYear() === new Date().getFullYear();
     this.loadSchedule();
-    this.centerOnSelected();
   }
 
   loadDefault() {
