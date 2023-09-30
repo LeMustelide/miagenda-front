@@ -76,3 +76,9 @@ hr {
   bottom: 0px;
   left: 12px;
 }
+
+@media screen and (max-width: 550px) {
+  .sidebar {
+    display: none;
+  }
+}
