@@ -70,3 +70,15 @@ hr {
   font-family: "Dela Gothic One", cursive;
   font-size: 1.4rem;
 }
+
+.version {
+  position: absolute;
+  bottom: 0px;
+  left: 12px;
+}
+
+@media screen and (max-width: 550px) {
+  .sidebar {
+    display: none;
+  }
+}
