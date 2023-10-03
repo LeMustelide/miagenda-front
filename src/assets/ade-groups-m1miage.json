@@ -121,5 +121,41 @@
             "Gr  TP3FI",
             "ANG3FI"
         ]
+    },
+    {
+        "parentGroups": [
+            "TP1",
+            "TD1"
+        ],
+        "adeNames": [
+            "G11 ALT"
+        ]
+    },
+    {
+        "parentGroups": [
+            "TP2",
+            "TD1"
+        ],
+        "adeNames": [
+            "G12 ALT"
+        ]
+    },
+    {
+        "parentGroups": [
+            "TP2",
+            "TD2"
+        ],
+        "adeNames": [
+            "G22 ALT"
+        ]
+    },
+    {
+        "parentGroups": [
+            "TP3",
+            "TD2"
+        ],
+        "adeNames": [
+            "G23 ALT"
+        ]
     }
 ]
