@@ -25,6 +25,9 @@ export class SidebarComponent {
       for (let group of groupType.groups) {
         if (!(group in this.selectedGroups)) {
           this.selectedGroups[group] = this.cookieService.get(group) === "true" || false;
+          if(this.selectedGroups[group] && groupType.required) { // TO DO : améliorer la gestion des groupes obligatoires
+            this.onGroupChange.emit({groupType: groupType.name, groupName: group, value: true});
+          }
         }
       }
     }
@@ -34,7 +37,8 @@ export class SidebarComponent {
     this.groupsService.getGroupsOfTypes(groupType).forEach((group) => {
       this.selectedGroups[group] = false;
     });
-    this.onGroupChange.emit({groupType, groupName, value});
+    this.onGroupChange.emit({groupType, groupName, value}); // attention
+
     this.selectedGroups[groupName] = value;
     this.groupsService.findIcalUrl(this.selectedGroups);
   }
