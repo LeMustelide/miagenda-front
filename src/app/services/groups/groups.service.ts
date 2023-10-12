@@ -130,9 +130,8 @@ export class GroupsService {
     this.cookieService.set('icalUrl', url || '', this.expirationDate);
   }
 
-  // Cette fonction retourne les groupes ADE qui on tout les groupes parent présent dans les cookies
-  getSelectedAdeGroups(): string[] {
-    const selectedAdeGroups: string[] = [];
+  getSelectedAdeGroups(): IAdeGroup[] {
+    const selectedAdeGroups: IAdeGroup[] = [];
     for (let adeGroup of this.adeGroups) {
       let isGroupSelected = true;
       for (let parentGroup of adeGroup.parentGroups) {
@@ -142,7 +141,7 @@ export class GroupsService {
         }
       }
       if (isGroupSelected) {
-        selectedAdeGroups.push(...adeGroup.adeNames);
+        selectedAdeGroups.push(adeGroup);
       }
     }
     return selectedAdeGroups;
