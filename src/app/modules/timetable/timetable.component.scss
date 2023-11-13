@@ -182,8 +182,8 @@ a {
       border-radius: 8px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
+      justify-content: center;
+      align-items: center;
       font-size: 0.7rem;
       min-height: calc(var(--size) * 100 / 60 * 1%);
       z-index: 2;
@@ -195,11 +195,12 @@ a {
       .event-content {
         padding: 6px 12px;
         border-radius: 8px;
-        width: 100%;
+        // width: 100%;
         position: absolute;
         max-height: 100%;
         transition: max-height 0.1s ease-out, background-color 0.1s ease;
         overflow: hidden;
+        text-align: center;
         .title {
           font-weight: 500;
           font-size: 0.9rem;
