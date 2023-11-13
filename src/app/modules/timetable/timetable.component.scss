@@ -195,7 +195,7 @@ a {
       .event-content {
         padding: 6px 12px;
         border-radius: 8px;
-        // width: 100%;
+        width: 100%;
         position: absolute;
         max-height: 100%;
         transition: max-height 0.1s ease-out, background-color 0.1s ease;
@@ -233,7 +233,7 @@ a {
     left: -75px;
     right: 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
     align-items: center;
     box-sizing: border-box;
     box-shadow: none !important;

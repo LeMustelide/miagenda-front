@@ -216,8 +216,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
     const percentagePerFr = 100 / 12.5;
     let positionPercentage = totalPosition * percentagePerFr;
-
-    return positionPercentage + '%';
+    
+    return Math.min(positionPercentage, 96) + '%';
   }
 
   get Months(): Date[] {
