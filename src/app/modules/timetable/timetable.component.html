@@ -56,13 +56,13 @@
           <i class="fas fa-arrow-left"></i>
         </a>
         <div class="select-wrapper">
-          <select
-            (change)="changeMonth($event)"
-          >
+          <select (change)="changeMonth($event)">
             <option
               *ngFor="let month of Months"
               [value]="month | date : 'yyyy-MM'"
-              [selected]="(month | date : 'yyyy-MM') === (date | date : 'yyyy-MM')"
+              [selected]="
+                (month | date : 'yyyy-MM') === (date | date : 'yyyy-MM')
+              "
             >
               {{ month | date : "MMMM YYYY" }}
             </option>
@@ -95,7 +95,14 @@
         <div>UTC +2</div>
       </div>
       <div class="day-name">
-        <div *ngFor="let day of weekDays" [ngClass]="{'current-day': (day | date : 'd') === (currentDay | date : 'd') && (day | date : 'M') === (currentDay | date : 'M')}" >
+        <div
+          *ngFor="let day of weekDays"
+          [ngClass]="{
+            'current-day':
+              (day | date : 'd') === (currentDay | date : 'd') &&
+              (day | date : 'M') === (currentDay | date : 'M')
+          }"
+        >
           {{ day | date : "EEE" | uppercase }}
           <p class="num">
             {{ day | date : "d" }}
@@ -120,8 +127,9 @@
         </ng-container>
         <ng-container *ngFor="let time of timeIntervals">
           <ng-container *ngFor="let day of weekDays">
-            <div *ngIf="getEvent(day, time); let event">
+            <div *ngIf="getEvent(day, time); let events">
               <div
+                *ngFor="let event of events"
                 class="event accent-orange-gradient"
                 style="--size:{{ getEventDuration(event) }}; --start:{{
                   getEventStart(event)
@@ -157,8 +165,9 @@
           <div class="content">
             <div></div>
             <ng-container *ngFor="let time of timeIntervals">
-              <div *ngIf="getEvent(currentDay, time); let event">
+              <div *ngIf="getEvent(currentDay, time); let events">
                 <div
+                  *ngFor="let event of events"
                   class="event accent-orange-gradient"
                   style="--size:{{ getEventDuration(event) }}; --start:{{
                     getEventStart(event)
