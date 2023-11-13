@@ -152,26 +152,24 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   // Cette fonction retourne l'événement pour un jour et un intervalle de temps donné, si disponible
-  getEvent(day: Date, time: string): ScheduleItem | null {
+  getEvent(day: Date, time: string): ScheduleItem[] | null {
     if (!this.scheduleData) {
       return null;
     }
-
+  
     const startTime = time.split(' - ')[0];
     const endTime = time.split(' - ')[1];
-    return (
-      this.scheduleData.data.find((item) => {
-        const itemDate = this.stringToDate(item.date);
-
-        return (
-          itemDate.getDate() === day.getDate() &&
-          itemDate.getMonth() === day.getMonth() &&
-          itemDate.getFullYear() === day.getFullYear() &&
-          item.start_time >= startTime &&
-          item.start_time < endTime
-        );
-      }) ?? null
-    );
+    return this.scheduleData.data.filter((item) => {
+      const itemDate = this.stringToDate(item.date);
+  
+      return (
+        itemDate.getDate() === day.getDate() &&
+        itemDate.getMonth() === day.getMonth() &&
+        itemDate.getFullYear() === day.getFullYear() &&
+        item.start_time >= startTime &&
+        item.start_time < endTime
+      );
+    });
   }
 
   stringToDate(dateString: string): Date {

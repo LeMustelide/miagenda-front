@@ -169,6 +169,11 @@ a {
     grid-template-columns: repeat(6, minmax(50px, 1fr));
     position: relative;
     & > div {
+      display: flex;
+      align-items: stretch;
+      flex-direction: column;
+      flex-wrap: wrap;
+      gap: 2px;
       box-shadow: inset 1px 0 0 #eceff1, inset 0px -1px 0 0 #eceff1;
       padding: 2px;
     }
@@ -180,7 +185,7 @@ a {
       justify-content: flex-start;
       align-items: flex-start;
       font-size: 0.7rem;
-      height: calc(var(--size) * 100 / 60 * 1%);
+      min-height: calc(var(--size) * 100 / 60 * 1%);
       z-index: 2;
       position: relative;
       transform: translateY(calc(var(--start) * 1%));
@@ -294,7 +299,6 @@ a {
         position: relative;
         display: flex;
         align-items: center;
-        
       }
       .select-wrapper:after {
         position: absolute;
@@ -360,6 +364,9 @@ a {
         grid-template-columns: 1fr;
         grid-template-rows: 0.5fr repeat(12, minmax(75px, 1fr));
         & > div {
+          display: flex;
+          align-items: stretch;
+          gap: 4px;
           box-shadow: inset 0px -1px 0 0 #eceff1;
           padding: 2px;
         }
@@ -370,13 +377,14 @@ a {
           justify-content: flex-start;
           align-items: flex-start;
           font-size: 1rem;
-          height: calc(var(--size) * 100 / 60 * 1%);
+          min-height: calc(var(--size) * 100 / 60 * 1%);
           z-index: 2;
           position: relative;
           transform: translateY(calc(var(--start) * 1%));
           background-color: #d4dcec;
           transition: 0.3s;
           overflow: hidden;
+          width: 100%;
           .event-content {
             padding: 12px;
             width: 100%;
@@ -392,6 +400,7 @@ a {
               text-overflow: ellipsis;
               overflow: hidden;
               white-space: wrap;
+              text-align: center;
             }
             p {
               margin: 0;
