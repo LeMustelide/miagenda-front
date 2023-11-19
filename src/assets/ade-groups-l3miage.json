@@ -2,17 +2,10 @@
     {
         "parentGroups": [
             "default"
-        ],
-        "adeNames": [
-            ""
-        ],
-        "unique": true
-    },
-    {
-        "parentGroups": [
-            "default"
          ],
         "adeNames": [
+            "SLA5IF01 GR01 MIAGE SLA5IF01CM",
+            "SLA5PP01 GR01 INGE SLA5PP01CM",
             ""
         ]
     },
@@ -21,7 +14,6 @@
             "default"
         ],
         "adeNames": [
-            "Gr  ALT"
         ],
         "ical": "https://aderead2022.univ-orleans.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?data=76dc4a599ebf765d6894fa77151504330b42f0976007a22e3029ca7f36487f166250ba3fea2e12caebbcd166cfe8847676086a9f9835af19755e9aa017201a7601b9572a4835a0c0fa2899706556b59e166c54e36382c1aa3eb0ff5cb8980cdb,1"
     },
