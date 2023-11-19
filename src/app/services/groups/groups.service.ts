@@ -13,15 +13,18 @@ export class GroupsService {
   private classes: IClass[] = groupData;
   thirtyDays = 365 * 24 * 60 * 60 * 1000;
   expirationDate = new Date(new Date().getTime() + this.thirtyDays);
-  classSelected: string = 'M1 MIAGE';
+  classSelected: string = 'L3 MIAGE';
   adeGroups: IAdeGroup[] = {} as IAdeGroup[];
   private class: IClass =
     this.classes.find((c: any) => c.name === this.classSelected) ||
     ({} as IClass);
 
+  
+
   constructor(private cookieService: CookieService, private http: HttpClient) {}
 
   getGroupsTypeForClass(className: string = this.classSelected): IGroupType[] {
+    console.log(this.class);
     let groups: IGroupType[] = [];
     this.classes.forEach((c: any) => {
       if (c.name === className) {
@@ -145,5 +148,9 @@ export class GroupsService {
       }
     }
     return selectedAdeGroups;
+  }
+
+  getClasses(): IClass[] {
+    return this.classes;
   }
 }

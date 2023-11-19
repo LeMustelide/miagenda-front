@@ -44,10 +44,19 @@
         <a href="https://github.com/LeMustelide/front-miagenda">
           <i class="fab fa-github"></i>
         </a>
-        <div class="switcher">
+        <select (change)="changeClass($event)">
+          <option
+            *ngFor="let class of classesNames"
+            [value]="class"
+            [selected]="class === selectedClass"
+          >
+            {{ class }}
+          </option>
+        </select>
+        <!-- <div class="switcher">
           <button class="switcher-item">Jour</button>
           <button class="switcher-item active">Semaine</button>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="mobile-head">
