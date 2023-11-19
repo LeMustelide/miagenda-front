@@ -24,7 +24,6 @@ export class GroupsService {
   constructor(private cookieService: CookieService, private http: HttpClient) {}
 
   getGroupsTypeForClass(className: string = this.classSelected): IGroupType[] {
-    console.log(this.class);
     let groups: IGroupType[] = [];
     this.classes.forEach((c: any) => {
       if (c.name === className) {

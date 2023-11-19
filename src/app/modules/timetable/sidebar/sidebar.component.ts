@@ -55,4 +55,19 @@ export class SidebarComponent {
 
     return '';
   }
+
+  updateGroups() {
+    this.groups = this.groupsService.getGroupsTypeForClass();
+    
+    for (let groupType of this.groups) {
+      for (let group of groupType.groups) {
+        if (!(group in this.selectedGroups)) {
+          this.selectedGroups[group] = this.cookieService.get(group) === "true" || false;
+          if(this.selectedGroups[group] && groupType.required) {
+            this.onGroupChange.emit({groupType: groupType.name, groupName: group, value: true});
+          }
+        }
+      }
+    }
+  }
 }
