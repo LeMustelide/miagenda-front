@@ -1,4 +1,4 @@
-![MIAGENDA]([https://lykos.vortexdev.fr/img/miagenda/miagendashort.png])
+![MIAGENDA](https://lykos.vortexdev.fr/img/miagenda/miagendashort.png)
 Miagenda est une solution web permettant de récupérer et d'afficher correctement et proprement votre enmploi du temps sans avoir à passer par 
 celui de l'Université d'Orléans.
 
