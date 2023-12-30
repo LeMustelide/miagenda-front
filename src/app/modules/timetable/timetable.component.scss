@@ -454,3 +454,20 @@ a {
   height: 0px;
   background: transparent; /* make scrollbar transparent */
 }
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #00000000;
+  color: #4f4f4f;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  padding: 6px;
+  border-radius: 18px;
+  border: none;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik01IDEwTDEyIDJMMTkgMTAiIHN0cm9rZT0iIzlkOWQ5ZCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8cGF0aCBkPSJNNSAxNEwxMiAyMkwxOSAxNCIgc3Ryb2tlPSIjOWQ5ZDlkIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+}

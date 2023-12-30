@@ -12,5 +12,13 @@
       }
     ],
     "adeConfig": "ade-groups-m1miage.json"
+  },
+  {
+    "name": "L3 MIAGE",
+    "groupTypes": [
+      { "name": "TD", "groups": ["TD1", "TD2"], "defaultGroup": "TD1" },
+      { "name": "TP", "groups": ["TP1", "TP2", "TP3"], "defaultGroup": "TP1" }
+    ],
+    "adeConfig": "ade-groups-l3miage.json"
   }
 ]

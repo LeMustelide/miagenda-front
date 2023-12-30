@@ -9,6 +9,7 @@ import { TimetableService } from 'src/app/services/timetable.service';
 import { ScheduleData, ScheduleItem } from '../../schedule.model';
 import { CookieService } from 'ngx-cookie-service';
 import { GroupsService } from 'src/app/services/groups/groups.service';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
   selector: 'app-timetable',
@@ -19,6 +20,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   selectedGroups: { [key: string]: boolean } = {};
   public scheduleData: ScheduleData | null = null;
   @ViewChild('scrollBox') scrollBox!: ElementRef;
+  @ViewChild('sidebar') sidebarComponent!: SidebarComponent;
 
   public timeIntervals: string[] = [
     '08h00 - 09h00',
@@ -39,6 +41,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   date!: Date;
   isToday: boolean = true;
   currentDay!: Date;
+  classesNames!: string[];
+  selectedClass!: string;
 
   constructor(
     private timetableService: TimetableService,
@@ -47,7 +51,11 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    this.selectedClass = 'M1 MIAGE';
     this.groupsService.selectedClass = 'M1 MIAGE';
+    this.classesNames = this.groupsService.getClasses().map((c) => {
+      return c.name;
+    });
     this.date = new Date();
     this.loadDefault();
     this.groupsService.loadAdeGroups().then(() => {
@@ -360,6 +368,17 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       }
     }
     return groupType;
+  }
+
+  changeClass(event: any): void {
+    
+    this.selectedClass = event.target.value;
+    this.groupsService.selectedClass = this.selectedClass;
+    this.groupsService.loadAdeGroups().then(() => {
+      this.groupsService.findIcalUrl(this.selectedGroups);
+      this.loadSchedule();
+    });
+    this.sidebarComponent.updateGroups();
   }
   
   
