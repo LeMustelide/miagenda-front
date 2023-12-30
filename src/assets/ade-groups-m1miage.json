@@ -14,7 +14,13 @@
             "default"
          ],
         "adeNames": [
-            ""
+            "",
+            "GR01 SMA8MI10CM",
+            "GR01 SMA8MI11CM",
+            "GR01 SMA8MI12CM",
+            "GR01 SMA8MI13CM",
+            "M1 INFORMATIQUE"
+
         ]
     },
     {
@@ -32,7 +38,8 @@
             "Formation initiale"
         ],
         "adeNames": [
-            "Gr  FI"
+            "Gr  FI",
+            "Gr FI"
         ],
         "ical": "https://aderead2022.univ-orleans.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?data=cc7ee745de3d21643a129a41f75db5740d3b4c68a7820e99c53ca46537bc18bd982bf381b1007d5c58e581d9e50ed9f0150773d38134ae18c98c0a9c1622637d48c2240b7941c7dd7e7dea10fc53247e,1"
     },
@@ -42,7 +49,8 @@
             "Alternant"
         ],
         "adeNames": [
-            "Gr TD1ALT"
+            "Gr TD1ALT",
+            "Gr TD1 ALT"
         ]
     },
     {
@@ -51,7 +59,8 @@
             "Formation initiale"
         ],
         "adeNames": [
-            "Gr  TD1FI"
+            "Gr  TD1FI",
+            "Gr TD1 FI"
         ]
     },
     {
@@ -60,7 +69,8 @@
             "Alternant"
         ],
         "adeNames": [
-            "Gr TD2ALT"
+            "Gr TD2ALT",
+            "Gr  TD2 ALT"
         ]
     },
     {
@@ -69,7 +79,8 @@
             "Formation initiale"
         ],
         "adeNames": [
-            "Gr  TD2FI"
+            "Gr  TD2FI",
+            "Gr  TD2 FI"
         ]
     },
     {
@@ -79,6 +90,7 @@
         ],
         "adeNames": [
             "Gr TP 1ALT",
+            "Gr TP1 ALT",
             "ANG1ALT"
         ]
     },
@@ -89,6 +101,7 @@
         ],
         "adeNames": [
             "Gr  TP1FI",
+            "Gr TP1 FI",
             "ANG1FI"
         ]
     },
@@ -99,6 +112,7 @@
         ],
         "adeNames": [
             "Gr TP 2ALT",
+            "Gr TP2 ALT",
             "ANG2ALT"
         ]
     },
@@ -109,6 +123,7 @@
         ],
         "adeNames": [
             "Gr  TP2FI",
+            "Gr TP2 FI",
             "ANG2FI"
         ]
     },
@@ -119,6 +134,7 @@
         ],
         "adeNames": [
             "Gr TP 3ALT",
+            "Gr TP3 ALT",
             "ANG3ALT"
         ]
     },
@@ -129,6 +145,7 @@
         ],
         "adeNames": [
             "Gr  TP3FI",
+            "Gr TP3 FI",
             "ANG3FI"
         ]
     },
