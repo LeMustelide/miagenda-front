@@ -74,7 +74,7 @@ export class HomeComponent {
       });
       worker.postMessage({
         data: data,
-        selectedGroups: this.groupsService.getSelectedAdeGroups(),
+        selectedGroups: this.groupsService.getSelectedAdeGroupsName(),
       });
       worker.onmessage = (event) => {
         observer.next(event.data);
@@ -137,6 +137,7 @@ export class HomeComponent {
     if (tomorrowEvent) {
       return tomorrowEvent;
     }
+
     return this.scheduleData.data[0];
   }
 

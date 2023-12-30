@@ -148,6 +148,23 @@ export class GroupsService {
     }
     return selectedAdeGroups;
   }
+  
+  getSelectedAdeGroupsName(): string[] {
+    const selectedAdeGroups: string[] = [];
+    for (let adeGroup of this.adeGroups) {
+      let isGroupSelected = true;
+      for (let parentGroup of adeGroup.parentGroups) {
+        if (!this.isGroupSelected(parentGroup) && parentGroup !== 'default') {
+          isGroupSelected = false;
+          break;
+        }
+      }
+      if (isGroupSelected) {
+        selectedAdeGroups.push(...adeGroup.adeNames);
+      }
+    }
+    return selectedAdeGroups;
+  }
 
   getClasses(): IClass[] {
     return this.classes;
