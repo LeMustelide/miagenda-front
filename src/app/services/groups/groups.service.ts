@@ -144,7 +144,6 @@ export class GroupsService {
         }
       }
       if (isGroupSelected) {
-        console.log(adeGroup);
         selectedAdeGroups.push(adeGroup);
       }
     }
