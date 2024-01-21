@@ -41,7 +41,8 @@
             "Gr  FI",
             "Gr FI"
         ],
-        "ical": "https://aderead2022.univ-orleans.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?data=cc7ee745de3d21643a129a41f75db5740d3b4c68a7820e99c53ca46537bc18bd982bf381b1007d5c58e581d9e50ed9f0150773d38134ae18c98c0a9c1622637d48c2240b7941c7dd7e7dea10fc53247e,1"
+        "ical": "https://aderead2022.univ-orleans.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?data=cc7ee745de3d21643a129a41f75db5740d3b4c68a7820e99c53ca46537bc18bd982bf381b1007d5c58e581d9e50ed9f0150773d38134ae18c98c0a9c1622637d48c2240b7941c7dd7e7dea10fc53247e,1",
+        "unique": true
     },
     {
         "parentGroups": [
