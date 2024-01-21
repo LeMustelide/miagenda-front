@@ -5,6 +5,7 @@ import { IClass } from '../../shared/interfaces/class.interface';
 import { IGroupType } from '../../shared/interfaces/class.interface';
 import { IAdeGroup } from '../../shared/interfaces/adeGroup.interface';
 import { HttpClient } from '@angular/common/http';
+import { isEmpty } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -137,12 +138,13 @@ export class GroupsService {
     for (let adeGroup of this.adeGroups) {
       let isGroupSelected = true;
       for (let parentGroup of adeGroup.parentGroups) {
-        if (!this.isGroupSelected(parentGroup) && parentGroup !== 'default') {
+        if ((!this.isGroupSelected(parentGroup) && parentGroup !== 'default') || adeGroup.ical !== undefined) {
           isGroupSelected = false;
           break;
         }
       }
       if (isGroupSelected) {
+        console.log(adeGroup);
         selectedAdeGroups.push(adeGroup);
       }
     }
