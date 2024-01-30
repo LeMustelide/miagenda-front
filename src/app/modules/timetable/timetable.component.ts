@@ -228,14 +228,18 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     return Math.min(positionPercentage, 96) + '%';
   }
 
+  // fonction retournant la liste des mois à afficher dans le select
+  // les mois sont calculés en fonction du mois actuel
+  // on affiche les 6 mois précédents et les 6 mois suivants
   get Months(): Date[] {
     const today = new Date();
     const months: Date[] = [];
-    for (let i = -6; i < 7; i++) {
-      const newDate = new Date(today);
-      newDate.setMonth(today.getMonth() + i);
-      months.push(newDate);
+
+    for (let i = -6; i <= 6; i++) {
+      const month = new Date(today.getFullYear(), today.getMonth() + i, 1);
+      months.push(month);
     }
+
     return months;
   }
 
