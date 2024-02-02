@@ -48,11 +48,30 @@ export class HomeComponent {
 
   loadSchedule(): Observable<ScheduleData> {
     return this.timetableService
-      .getSchedule(
-        this.cookieService.get('icalUrl'),
-        formatDate(this.date, 'YYYY-MM-dd', 'fr')
-      )
-      .pipe(switchMap((data: ScheduleData) => this.filterData(data)));
+      .getSchedule(this.cookieService.get('icalUrl'))
+      .pipe(
+        switchMap((data: ScheduleData) => {
+          const worker = new Worker('./assets/timetable-schedule-worker.js', {
+            type: 'module',
+          });
+          worker.postMessage({
+            data: data.data,
+            date: this.date,
+            selectedGroups: this.groupsService.getSelectedAdeGroups(),
+          });
+          return new Observable<ScheduleData>((observer) => {
+            worker.onmessage = (event) => {
+              this.scheduleData = {
+                ...data,
+                data: event.data,
+              };
+              worker.terminate();
+              observer.next(this.scheduleData);
+              observer.complete();
+            };
+          });
+        })
+      );
   }
 
   private update() {
@@ -111,12 +130,13 @@ export class HomeComponent {
 
     const todayEvent = this.scheduleData.data.find((item) => {
       const itemDate = this.stringToDate(item.date);
-
+      const startTime = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate(), ...item.start_time.split('h').map(Number)).getTime();
+      const currentTime = new Date().getTime();
       return (
         itemDate.getDate() === today.getDate() &&
         itemDate.getMonth() === today.getMonth() &&
         itemDate.getFullYear() === today.getFullYear() &&
-        item.start_time >= formatDate(today, 'HH:mm', 'fr')
+        startTime > currentTime
       );
     });
 
@@ -243,7 +263,7 @@ export class HomeComponent {
 
     // Calcul de la différence en jours
     const dayDifference = Math.floor(
-      (nextEventDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 23) // TO DO : vérifier le calcul, c'est bizarre cette division par 23
+      (nextEventDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 22) // TO DO : vérifier le calcul, c'est bizarre cette division par 23
     );
 
     // Calcul de la différence en heures et minutes pour le jour du prochain cours
