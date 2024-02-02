@@ -13,7 +13,7 @@ export class GroupsService {
   private classes: IClass[] = groupData;
   thirtyDays = 365 * 24 * 60 * 60 * 1000;
   expirationDate = new Date(new Date().getTime() + this.thirtyDays);
-  classSelected: string = 'L3 MIAGE';
+  classSelected: string = this.selectedClass;
   adeGroups: IAdeGroup[] = {} as IAdeGroup[];
   private class: IClass =
     this.classes.find((c: any) => c.name === this.classSelected) ||
