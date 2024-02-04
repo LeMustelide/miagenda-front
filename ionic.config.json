@@ -1,0 +1,7 @@
+{
+  "name": "miagenda",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

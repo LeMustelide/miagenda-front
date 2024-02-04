@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MIAGENDA</string>
+    <string name="title_activity_main">MIAGENDA</string>
+    <string name="package_name">fr.miagenda.app</string>
+    <string name="custom_url_scheme">fr.miagenda.app</string>
+</resources>
