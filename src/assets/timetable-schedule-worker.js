@@ -32,10 +32,22 @@ onmessage = function (e) {
       )
     );
 
+    const allGroupsHaveSameParent = item.groups.every(group => {
+      return selectedGroups.some(selectedGroup => {
+        return selectedGroup.adeNames.includes(group) && selectedGroup.parentGroup === selectedGroups[0].parentGroup;
+      });
+    });
+
     const uniqueGroupCondition = (
-      item.groups.length === 1 &&
+      ( 
+        item.groups.length === 1 ||
+        allGroupsHaveSameParent 
+      ) &&
       isGroupUnique(item.groups[0])
     );
+
+    console.log('allGroupsHaveSameParent :', item.groups, ' ', allGroupsHaveSameParent); 
+    
 
     
 

@@ -169,4 +169,15 @@ export class GroupsService {
   getClasses(): IClass[] {
     return this.classes;
   }
+
+  getParentGroup(adeGroup: string): string {
+    let parentGroup = '';
+    for (let group of this.adeGroups) {
+      if (group.adeNames.includes(adeGroup)) {
+        parentGroup = group.parentGroups[0];
+        break;
+      }
+    }
+    return parentGroup;
+  }
 }
