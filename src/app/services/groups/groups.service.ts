@@ -13,7 +13,7 @@ export class GroupsService {
   private classes: IClass[] = groupData;
   thirtyDays = 365 * 24 * 60 * 60 * 1000;
   expirationDate = new Date(new Date().getTime() + this.thirtyDays);
-  classSelected: string = 'L3 MIAGE';
+  classSelected: string = this.selectedClass;
   adeGroups: IAdeGroup[] = {} as IAdeGroup[];
   private class: IClass =
     this.classes.find((c: any) => c.name === this.classSelected) ||
@@ -168,5 +168,16 @@ export class GroupsService {
 
   getClasses(): IClass[] {
     return this.classes;
+  }
+
+  getParentGroup(adeGroup: string): string {
+    let parentGroup = '';
+    for (let group of this.adeGroups) {
+      if (group.adeNames.includes(adeGroup)) {
+        parentGroup = group.parentGroups[0];
+        break;
+      }
+    }
+    return parentGroup;
   }
 }
