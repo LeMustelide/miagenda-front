@@ -239,7 +239,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     const topPosition = this.getCurrentLinePosition();
     this.renderer.setStyle(currentLineDiv, 'top', `${topPosition}px`);
     this.date = new Date();
-    console.log(topPosition);
   }
 
   // fonction retournant la liste des mois à afficher dans le select
