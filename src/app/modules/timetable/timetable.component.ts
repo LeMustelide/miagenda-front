@@ -4,12 +4,14 @@ import {
   ElementRef,
   AfterViewInit,
   ViewChild,
+  Renderer2,
 } from '@angular/core';
 import { TimetableService } from 'src/app/services/timetable.service';
 import { ScheduleData, ScheduleItem } from '../../schedule.model';
 import { CookieService } from 'ngx-cookie-service';
 import { GroupsService } from 'src/app/services/groups/groups.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-timetable',
@@ -47,7 +49,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   constructor(
     private timetableService: TimetableService,
     private cookieService: CookieService,
-    private groupsService: GroupsService
+    private groupsService: GroupsService,
+    private renderer: Renderer2,
+    private el: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +68,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
     this.generateWeek();
     this.currentDay = new Date().getDay() === 0 ? this.date : new Date();
+
+    interval(10000).subscribe(() => this.updateCurrentLinePosition());
   }
 
   generateWeek(): void {
@@ -226,6 +232,14 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     let positionPercentage = totalPosition * percentagePerFr;
     
     return Math.min(positionPercentage, 96) + '%';
+  }
+
+  private updateCurrentLinePosition() {
+    const currentLineDiv = this.el.nativeElement.querySelector('.current-line');
+    const topPosition = this.getCurrentLinePosition();
+    this.renderer.setStyle(currentLineDiv, 'top', `${topPosition}px`);
+    this.date = new Date();
+    console.log(topPosition);
   }
 
   // fonction retournant la liste des mois à afficher dans le select
