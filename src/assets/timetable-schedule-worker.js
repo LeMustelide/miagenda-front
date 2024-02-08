@@ -46,11 +46,6 @@ onmessage = function (e) {
       isGroupUnique(item.groups[0])
     );
 
-    console.log('allGroupsHaveSameParent :', item.groups, ' ', allGroupsHaveSameParent); 
-    
-
-    
-
     return dateCondition && (groupCondition || uniqueGroupCondition);
   });
 
